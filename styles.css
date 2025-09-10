@@ -1,0 +1,160 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background: #f9f9f9;
+    padding: 15px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.back-link {
+    color: #3498db;
+    cursor: pointer;
+    margin-bottom: 20px;
+    display: inline-block;
+    text-decoration: none;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+h2 {
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+.song-list {
+    list-style-position: inside;
+}
+
+.song-item {
+    padding: 6px;
+    margin-bottom: 4px;
+    background: white;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.song-item:hover {
+    background: #e3f2fd;
+}
+
+.song-item.error {
+    color: #e74c3c;
+    background: #ffe5e5;
+    cursor: default;
+}
+
+.song-header {
+    text-align: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.song-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 8px;
+}
+
+.song-author {
+    font-size: 0.9rem;
+    color: #666;
+    font-style: italic;
+}
+
+.lyrics-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.song-section {
+    display: block;
+}
+
+.section-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #7f8c8d;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+.section-lyrics {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #2c3e50;
+    padding-left: 0;
+}
+
+#toc,
+#song {
+    display: none;
+}
+
+#toc.active,
+#song.active {
+    display: block;
+}
+
+.error-msg {
+    color: #e74c3c;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Larger screens */
+@media (min-width: 480px) {
+    body {
+        padding: 20px;
+    }
+
+    .song-section {
+        display: flex;
+        gap: 15px;
+    }
+
+    .section-label {
+        min-width: 70px;
+        padding-top: 6px;
+        margin-bottom: 0;
+    }
+
+    .section-lyrics {
+        flex: 1;
+        font-size: 1rem;
+        line-height: 1.8;
+    }
+
+    .song-title {
+        font-size: 1.8rem;
+    }
+
+    .song-author {
+        font-size: 1rem;
+    }
+}
+
+/* Very small screens */
+@media (max-width: 360px) {
+    .song-title {
+        font-size: 1.3rem;
+    }
+
+    .section-lyrics {
+        font-size: 0.79rem;
+    }
+}
