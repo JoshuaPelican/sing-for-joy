@@ -1,4 +1,5 @@
-// List of songs to display
+// Cache for loaded songs
+const songCache = new Map();
 
 function parseSong(text) {
     const lines = text.trim().split('\n');
@@ -35,46 +36,48 @@ function parseSong(text) {
     return { name: title, author, arrangement, elements };
 }
 
-async function loadSong(filename) {
-    try {
-        const response = await fetch(`songs/${filename}`);
-        if (!response.ok) throw new Error('File not found');
-        const text = await response.text();
-        const song = parseSong(text);
+function displaySong(song) {
+    let html = `
+        <div class="song-header">
+            <h1 class="song-title">${song.name}</h1>
+            <p class="song-author">${song.author}</p>
+        </div>
+        <div class="lyrics-container">
+    `;
 
-        let html = `
-            <div class="song-header">
-                <h1 class="song-title">${song.name}</h1>
-                <p class="song-author">${song.author}</p>
-            </div>
-            <div class="lyrics-container">
-        `;
+    song.arrangement.forEach(elementKey => {
+        const element = song.elements[elementKey];
+        if (!element) return;
 
-        song.arrangement.forEach(elementKey => {
-            const element = song.elements[elementKey];
-            if (!element) return;
-
-            html += `
-                <div class="song-section">
-                    <div class="section-label">${element.type}</div>
-                    <div class="section-lyrics">
-                        ${element.lyrics.join('<br>')}
-                    </div>
+        html += `
+            <div class="song-section">
+                <div class="section-label">${element.type}</div>
+                <div class="section-lyrics">
+                    ${element.lyrics.join('<br>')}
                 </div>
-            `;
-        });
+            </div>
+        `;
+    });
 
-        html += '</div>';
-        document.getElementById('songContent').innerHTML = html;
+    html += '</div>';
+    document.getElementById('songContent').innerHTML = html;
 
-        document.getElementById('toc').classList.remove('active');
-        document.getElementById('song').classList.add('active');
+    document.getElementById('toc').classList.remove('active');
+    document.getElementById('song').classList.add('active');
+}
 
-    } catch (error) {
-        document.getElementById('songContent').innerHTML =
-            `<div class="error-msg">Error loading song: ${filename}</div>`;
-        document.getElementById('toc').classList.remove('active');
-        document.getElementById('song').classList.add('active');
+function loadSong(filename) {
+    const cachedSong = songCache.get(filename);
+    
+    if (cachedSong) {
+        if (cachedSong.error) {
+            document.getElementById('songContent').innerHTML =
+                `<div class="error-msg">Error loading song: ${filename}</div>`;
+            document.getElementById('toc').classList.remove('active');
+            document.getElementById('song').classList.add('active');
+        } else {
+            displaySong(cachedSong);
+        }
     }
 }
 
@@ -83,31 +86,47 @@ function showTOC() {
     document.getElementById('toc').classList.add('active');
 }
 
-async function loadSongList() {
+async function loadAllSongs() {
     const list = document.getElementById('songList');
-    list.innerHTML = '';
-
-    for (const filename of songFiles) {
-        const li = document.createElement('li');
-
+    list.innerHTML = '<div class="loading">Loading songs...</div>';
+    
+    // Fetch all songs in parallel
+    const songPromises = songFiles.map(async (filename) => {
         try {
             const response = await fetch(`songs/${filename}`);
             if (!response.ok) throw new Error('Not found');
             const text = await response.text();
             const song = parseSong(text);
-
+            
+            return { filename, song, error: false };
+        } catch (error) {
+            return { filename, song: null, error: true };
+        }
+    });
+    
+    const results = await Promise.all(songPromises);
+    
+    // Clear loading message
+    list.innerHTML = '';
+    
+    // Cache results and create list items
+    results.forEach(({ filename, song, error }) => {
+        const li = document.createElement('li');
+        
+        if (error) {
+            songCache.set(filename, { error: true });
+            li.className = 'song-item error';
+            li.textContent = `${filename} (NOT FOUND)`;
+        } else {
+            songCache.set(filename, song);
             li.className = 'song-item';
             li.textContent = song.name;
             li.onclick = () => loadSong(filename);
-
-        } catch (error) {
-            li.className = 'song-item error';
-            li.textContent = `${filename} (NOT FOUND)`;
         }
-
+        
         list.appendChild(li);
-    }
+    });
 }
 
 // Initialize
-loadSongList();
+loadAllSongs();
