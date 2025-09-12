@@ -9,5 +9,6 @@ const songFiles = [
     'goodness-of-god',
     'before-the-throne',
     'never-cease-to-praise',
-    'those-who-look-to-him'
+    'those-who-look-to-him',
+    'all-sufficient-merit'
 ];
