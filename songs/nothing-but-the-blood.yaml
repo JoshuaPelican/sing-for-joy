@@ -1,0 +1,31 @@
+name: Nothing But The Blood
+author: Robert Lowry
+
+arrangement: [verse1, chorus, verse2, chorus, verse3, chorus, verse4, chorus]
+
+elements:
+  verse1:
+    - What can wash away my sin?
+    - Nothing but the blood of Jesus
+    - What can make me whole again?
+    - Nothing but the blood of Jesus
+  chorus:
+    - O precious is the flow
+    - That makes me white as snow
+    - No other fount I know
+    - Nothing but the blood of Jesus
+  verse2:
+    - For my pardon, this I see
+    - Nothing but the blood of Jesus
+    - For my cleansing, this my plea
+    - Nothing but the blood of Jesus
+  verse3:
+    - Nothing can for sin atone
+    - Nothing but the blood of Jesus
+    - Naught of good that I have done
+    - Nothing but the blood of Jesus
+  verse4:
+    - This is all my hope and peace
+    - Nothing but the blood of Jesus
+    - This is all my righteousness
+    - Nothing but the blood of Jesus

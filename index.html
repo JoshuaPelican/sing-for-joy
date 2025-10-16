@@ -9,13 +9,20 @@
 </head>
 
 <body>
-    <button onclick="document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen()">⛶</button>
+    <button class="focus-button" onclick="document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen()"><strong>⛶</strong></button>
     <nav id="toc" class="active">
         <h2 class="song-title">Sing For Joy</h2>
         <h3>Song List & Lyrics</h3>
         <ol class="song-list" id="songList"></ol>
-        <p class="credits"><i>Thanks to Jennifer Ou for organizing! <br>Thanks to Daniel Yen for providing a space to gather! <br>Thanks to Joshua Pelkington for these lyrics.</i></p>
-        <p></p><a href="https://docs.google.com/forms/d/1TqZYus-cnbzcF9ICdVFqH9LwDEVTybSX9xBkZ6tV19c/viewform?edit_requested=true" target="_blank">Join the Mailing List</a></p>
+        <h3>Thanks</h3>
+        <p class="credits">
+            <i>
+                Jennifer Ou - Organizing <br>
+                Daniel Yen - Hosting<br>
+                Joshua Pelkington - Lyrics
+            </i>
+        </p>
+        <p><a href="https://docs.google.com/forms/d/1TqZYus-cnbzcF9ICdVFqH9LwDEVTybSX9xBkZ6tV19c/viewform?edit_requested=true" target="_blank">Join the mailing list ⮺</a></p>
     </nav>
 
     <main id="song">
