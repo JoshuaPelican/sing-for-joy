@@ -1,41 +1,6 @@
 // Cache for loaded songs
 const songCache = new Map();
 
-function parseSong(text) {
-    const lines = text.trim().split('\n');
-    let i = 0;
-
-    const title = lines[i++];
-    const author = lines[i++];
-
-    while (i < lines.length && lines[i].trim() === '') i++;
-
-    const arrangement = lines[i++].split(',').map(s => s.trim());
-
-    while (i < lines.length && lines[i].trim() === '') i++;
-
-    const elements = {};
-    while (i < lines.length) {
-        const elementType = lines[i++];
-        if (!elementType || elementType.trim() === '') continue;
-
-        const lyrics = [];
-        while (i < lines.length && lines[i].trim() !== '') {
-            lyrics.push(lines[i++]);
-        }
-
-        const key = elementType.toLowerCase().replace(/\s+/g, '');
-        elements[key] = {
-            type: elementType,
-            lyrics: lyrics
-        };
-
-        while (i < lines.length && lines[i].trim() === '') i++;
-    }
-
-    return { name: title, author, arrangement, elements };
-}
-
 function displaySong(song) {
     let html = `
         <div class="song-header">
@@ -46,14 +11,17 @@ function displaySong(song) {
     `;
 
     song.arrangement.forEach(elementKey => {
-        const element = song.elements[elementKey];
-        if (!element) return;
+        const lyrics = song.elements[elementKey];
+        if (!lyrics) return;
 
         html += `
             <div class="song-section">
-                <div class="section-label">${element.type}</div>
+                <div class="section-label">${elementKey.replace(/(\D+)(\d+)/, '$1 $2')}</div>
                 <div class="section-lyrics">
-                    ${element.lyrics.join('<br>')}
+                    ${lyrics.map((lyric, i) => {
+                        if (!lyric) return `<div style="margin: 0.75em 0;"></div>`;
+                        return `<div>${lyric}</div>`;
+                    }).join('')}
                 </div>
             </div>
         `;
@@ -93,13 +61,21 @@ async function loadAllSongs() {
     // Fetch all songs in parallel
     const songPromises = songFiles.map(async (filename) => {
         try {
-            const response = await fetch(`songs/${filename}`);
+            const response = await fetch(`songs/${filename}.yaml`);
             if (!response.ok) throw new Error('Not found');
             const text = await response.text();
-            const song = parseSong(text);
+            const parsed = jsyaml.load(text);
+            
+            const song = {
+                name: parsed.name,
+                author: parsed.author,
+                arrangement: parsed.arrangement,
+                elements: parsed.elements
+            };
             
             return { filename, song, error: false };
         } catch (error) {
+            console.error(`Error loading ${filename}:`, error);
             return { filename, song: null, error: true };
         }
     });

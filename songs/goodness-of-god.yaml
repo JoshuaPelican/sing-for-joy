@@ -1,0 +1,35 @@
+name: Goodness of God
+author: Worship Initiative
+
+arrangement:
+  [verse1, chorus, verse2, chorus, bridge, bridge, chorus, chorus, tag]
+
+elements:
+  verse1:
+    - I love You, Lord
+    - Oh, Your mercy never fails me
+    - All my days
+    - I've been held by Your hands
+    - From the moment that I wake up
+    - Until I lay my head
+    - Oh, I will sing of the goodness of God
+  chorus:
+    - And all my life, You have been faithful
+    - All my life, You have been so, so good
+    - With every breath that I am able
+    - Oh, I will sing of the goodness of God
+  verse2:
+    - I love Your voice
+    - You led me through the fire
+    - In darkest nights
+    - You are close like no other
+    - I've known You as a father
+    - I've known You as a friend
+    - And I have lived in the goodness of God
+  bridge:
+    - "'Cause Your goodness is running after, it's running after me"
+    - Your goodness is running after, it's running after me
+    - With my life laid down, I surrender now, I give You everything
+    - Your goodness is running after, it's running after me
+  tag:
+    - Oh, I will sing of the goodness of God

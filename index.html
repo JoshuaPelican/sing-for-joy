@@ -9,19 +9,21 @@
 </head>
 
 <body>
-    <div id="toc" class="active">
+    <button onclick="document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen()">⛶</button>
+    <nav id="toc" class="active">
         <h2 class="song-title">Sing For Joy</h2>
         <h3>Song List & Lyrics</h3>
         <ol class="song-list" id="songList"></ol>
-        <!--<p class="credits"><i>Thanks to Jennifer Ou for organizing! <br>Thanks to Daniel Yen for providing a space to gather! <br>Thanks to Joshua Pelkington for these lyrics.</i></p>-->
-        <p class="credits"><i></i></p>
-    </div>
+        <p class="credits"><i>Thanks to Jennifer Ou for organizing! <br>Thanks to Daniel Yen for providing a space to gather! <br>Thanks to Joshua Pelkington for these lyrics.</i></p>
+        <p></p><a href="https://docs.google.com/forms/d/1TqZYus-cnbzcF9ICdVFqH9LwDEVTybSX9xBkZ6tV19c/viewform?edit_requested=true" target="_blank">Join the Mailing List</a></p>
+    </nav>
 
-    <div id="song">
+    <main id="song">
         <a class="back-link" onclick="showTOC()">← Back to songs</a>
         <div id="songContent"></div>
-    </div>
+    </main>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
     <script src="song-list.js"></script>
     <script src="song-display.js"></script>
 </body>

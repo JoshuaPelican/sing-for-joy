@@ -1,0 +1,38 @@
+# Notes on Format
+# **name**: The title of the song
+# **author**: Songwriter/composer information
+# **arrangement**: Comma-separated list of sections in the order they appear (lowercase, no spaces)
+# **elements**: Each section as a key with a list of lyric lines
+# Blank lines in lyrics are represented as empty items in the list
+# Section keys should match the arrangement list exactly
+
+name: Song Name
+author: Author Name
+
+arrangement: verse1, verse2, chorus, verse3, chorus, bridge, chorus
+
+elements:
+  verse1:
+    - Lyric line 1
+    - Lyric line 2
+    - Lyric line 3
+
+  verse2:
+    - Lyric line 1
+    - Lyric line 2
+    - Lyric line 3
+
+  chorus:
+    - Lyric line 1
+    - Lyric line 2
+    - Lyric line 3
+
+  verse3:
+    - Lyric line 1
+    - Lyric line 2
+    - Lyric line 3
+
+  bridge:
+    - Lyric line 1
+    - Lyric line 2
+    - Lyric line 3
