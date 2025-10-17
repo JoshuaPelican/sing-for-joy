@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <button class="focus-button" onclick="document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen()"><strong>⛶</strong></button>
+    <button class="focus-button" onclick="focusMode()"><strong>⛶</strong></button>
     <nav id="toc" class="active">
         <h2 class="song-title">Sing For Joy</h2>
         <h3>Song List & Lyrics</h3>
@@ -31,6 +31,7 @@
     </main>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+    <script src="focus.js"></script>
     <script src="song-list.js"></script>
     <script src="song-display.js"></script>
 </body>

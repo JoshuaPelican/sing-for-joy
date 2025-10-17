@@ -9,6 +9,5 @@ const songFiles = [
     'on-christ-the-rock',
     'oh-lord-my-rock-and-my-redeemer',
     'yet-not-i',
-    'goodness-of-god',
     'complete-in-thee'
 ];

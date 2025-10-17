@@ -1,11 +1,18 @@
-:root{
-    --font-head: #333;
-    --font-sub: #7e6b4f;
-    --font-body: black;
-    --background: #f9f9f9;
-    --accent: #d08400;
-    --highlight: #fff4e1;
-    --error: #e73c3c;
+:root {
+    --font-head: #2a2a2a;
+    /* Softer than #333 */
+    --font-sub: #5a4a3a;
+    /* Darker brown for better contrast */
+    --font-body: #1a1a1a;
+    /* Softer than pure black */
+    --background: #fdfcf8;
+    /* Warmer off-white to reduce glare */
+    --accent: #9a5d0f;
+    /* Darker orange for better contrast */
+    --highlight: #f5e6d0;
+    /* Slightly more pronounced */
+    --error: #c72e2e;
+    /* Slightly darker red */
 }
 
 * {
@@ -50,10 +57,10 @@ h3 {
     top: 15px;
     right: 15px;
     padding: 10px 15px;
-    background-color: var(--background);
+    background-color: var(--background);    
     color: var(--font-sub);
     border: none;
-    border-radius: 4px;
+    border-radius: 9999px;
     cursor: pointer;
     font-size: 16px;
     z-index: 9999;
@@ -71,7 +78,7 @@ h3 {
 .song-item {
     padding: 6px;
     margin-bottom: 4px;
-    background: white;
+    background-color: #fbf4ec;    
     border-radius: 4px;
     cursor: pointer;
     transition: background 0.2s;
@@ -83,7 +90,7 @@ h3 {
 
 .song-item.error {
     color: var(--error);
-    background: var(--highlight);
+    background: var(--background);
     cursor: default;
 }
 
@@ -110,7 +117,7 @@ h3 {
 .lyrics-container {
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 40px;
 }
 
 .song-section {
@@ -127,10 +134,12 @@ h3 {
 }
 
 .section-lyrics {
-    font-size: 0.9rem;
+    font-size: 1.1rem;
     line-height: 1.6;
     color: var(--font-body);
     padding-left: 0;
+    hyphens: auto;
+    -webkit-hyphens: auto;
 }
 
 #toc,
@@ -191,6 +200,6 @@ h3 {
     }
 
     .section-lyrics {
-        font-size: 0.79rem;
+        font-size: .79em;
     }
 }
