@@ -28,7 +28,8 @@ async function focusMode() {
                }
            });
        } catch (err) {
-           // Silently fail if not supported
+           
+        // Silently fail if not supported
        }
    }
 }
