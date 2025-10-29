@@ -79,6 +79,11 @@ function toggleSongDisplay(isActive){
 }
 
 async function loadTOC(songsLists, showDateHeaders = false) {
+    if(songsLists == null)
+    {
+        tocSongList.innerHTML = '';
+        return;
+    }
     tocSongList.innerHTML = '<div class="loading">Loading songs...</div>';
 
     const songFileList = songsLists.map(x => x.songs).flat();
@@ -157,11 +162,9 @@ function toggleArchive(){
     }
     else{
         archiveButton.innerText = "Song Archive";
-        loadTOC([songFiles[0]])
+        loadTOC()
     }
 }
 
 // Initialize
-loadTOC([songFiles[0]]);
-//loadArchive();
-//displayArchive();
+loadTOC();

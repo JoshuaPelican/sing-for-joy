@@ -168,7 +168,7 @@ h3 {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 5px;
 }
 
 #songList h3{
