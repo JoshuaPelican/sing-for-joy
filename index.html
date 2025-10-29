@@ -14,7 +14,17 @@
     <nav id="toc" class="active">
         <h2 class="song-title">Sing For Joy</h2>
         <h3>Song List & Lyrics</h3>
-        <ol class="song-list" id="songList"></ol>
+        <div id="songList"></div>
+        <div class="line"></div>
+        <div class="song-item" id="archiveButton" onclick="toggleArchive()">Song Archive</div>
+    </nav>
+
+    <main id="song">
+        <a class="back-link" onclick="toggleSongDisplay(false)">← Back to songs</a>
+        <div id="songContent"></div>
+    </main>
+    <footer>
+        <div class="line"></div>
         <h3>Thanks</h3>
         <p class="credits">
             <i>
@@ -23,13 +33,9 @@
                 Joshua Pelkington - Lyrics
             </i>
         </p>
-        <p><a href="https://docs.google.com/forms/d/1TqZYus-cnbzcF9ICdVFqH9LwDEVTybSX9xBkZ6tV19c/viewform?edit_requested=true" target="_blank">Join the mailing list ⮺</a></p>
-    </nav>
-
-    <main id="song">
-        <a class="back-link" onclick="showTOC()">← Back to songs</a>
-        <div id="songContent"></div>
-    </main>
+        <p><a href="https://docs.google.com/forms/d/1TqZYus-cnbzcF9ICdVFqH9LwDEVTybSX9xBkZ6tV19c" target="_blank">Join the
+                mailing list ⮺</a></p>
+    </footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
     <script src="focus.js"></script>

@@ -1,18 +1,25 @@
 :root {
     --font-head: #2a2a2a;
-    /* Softer than #333 */
     --font-sub: #5a4a3a;
-    /* Darker brown for better contrast */
     --font-body: #1a1a1a;
-    /* Softer than pure black */
     --background: #fdfcf8;
-    /* Warmer off-white to reduce glare */
+    --background-accent: #f8f1e6;
     --accent: #9a5d0f;
-    /* Darker orange for better contrast */
     --highlight: #f5e6d0;
-    /* Slightly more pronounced */
     --error: #c72e2e;
-    /* Slightly darker red */
+}
+
+@media (prefers-color-scheme: dark){
+    :root {
+        --font-head: #e8e8e8;
+        --font-sub: #bca78d;
+        --font-body: #d4d4d4;
+        --background: #1a1816;
+        --background-accent: #24211f;
+        --accent: #a97e47;
+        --highlight: #2d2618;
+        --error: #ff6b6b;
+    }
 }
 
 * {
@@ -29,6 +36,7 @@ body {
     padding: 15px;
     max-width: 600px;
     margin: 0 auto;
+    touch-action: none;
 }
 
 a {
@@ -71,14 +79,21 @@ h3 {
     text-align: center;
 }
 
-.song-list {
+.song-list ol{
     list-style-position: inside;
+}
+
+.line{
+    width: 300px;
+    margin: 10px 0;
+    border: 1px solid var(--accent);
 }
 
 .song-item {
     padding: 6px;
     margin-bottom: 4px;
-    background-color: #fbf4ec;    
+    color: var(--font-body);
+    background-color: var(--background-accent);    
     border-radius: 4px;
     cursor: pointer;
     transition: background 0.2s;
@@ -95,10 +110,11 @@ h3 {
 }
 
 .song-header {
-    text-align: center;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
     margin-bottom: 25px;
     padding-bottom: 15px;
-    border-bottom: 2px solid var(--accent);
 }
 
 .song-title {
@@ -149,6 +165,18 @@ h3 {
 
 #toc.active,
 #song.active {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+#songList h3{
+    text-align: center;
+    margin-top: 10px;
+}
+
+footer{
     display: flex;
     flex-direction: column;
     align-items: center;
