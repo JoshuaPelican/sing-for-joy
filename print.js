@@ -16,6 +16,7 @@ class HymnalPrinter {
         };
         this.allSongs = []; // Store all songs for TOC
         this.date;
+        this.qrCodeSize = 45; // QR code size in mm - bigger now
     }
 
     async generatePDF(songIDs) {
@@ -38,15 +39,26 @@ class HymnalPrinter {
         });
 
         // Add sheets in booklet order
-        bookletSheets.forEach((sheet, index) => {
+        for (let i = 0; i < bookletSheets.length; i++) {
+            const sheet = bookletSheets[i];
+            
             // Add front of sheet
-            if (index > 0) doc.addPage();
+            if (i > 0) doc.addPage();
+            
+            // Add fold/staple lines - staple lines only on first sheet front
+            if (i === 0) {
+                this.renderStapleAndFoldLines(doc);
+            } else {
+                this.renderFoldLine(doc);
+            }
+            
             this.renderBookletPage(doc, sheet.front.left, sheet.front.right);
             
             // Add back of sheet
             doc.addPage();
+            this.renderFoldLine(doc); // Only fold line on backs
             this.renderBookletPage(doc, sheet.back.left, sheet.back.right);
-        });
+        }
 
         return doc;
     }
@@ -76,9 +88,9 @@ class HymnalPrinter {
             content: []
         });
         
-        // Page 2 is blank (back of title page)
+        // Page 2 is the back cover with QR codes and credits
         pages.push({
-            type: 'blank',
+            type: 'backcover',
             content: []
         });
 
@@ -139,25 +151,61 @@ class HymnalPrinter {
         const numSheets = n / 4;
         
         // Create booklet sheet arrangement
-        // For 8 pages: 
-        // Sheet 1: Front (8,1), Back (2,7)
-        // Sheet 2: Front (6,3), Back (4,5)
-        
         for (let i = 0; i < numSheets; i++) {
             const sheet = {
                 front: {
-                    left: pages[n - 1 - i * 2],      // 8, 6, ...
-                    right: pages[i * 2]                // 1, 3, ...
+                    left: pages[n - 1 - i * 2],      
+                    right: pages[i * 2]               
                 },
                 back: {
-                    left: pages[i * 2 + 1],            // 2, 4, ...
-                    right: pages[n - 2 - i * 2]        // 7, 5, ...
+                    left: pages[i * 2 + 1],           
+                    right: pages[n - 2 - i * 2]       
                 }
             };
             sheets.push(sheet);
         }
 
         return sheets;
+    }
+
+    renderFoldLine(doc) {
+        const centerX = this.pageWidth / 2;
+        
+        doc.setDrawColor(180, 180, 180);
+        doc.setLineWidth(0.3);
+        doc.setLineDash([2, 2]);
+
+        // Center fold line (vertical)
+        doc.line(centerX, this.margin, centerX, this.pageHeight - this.margin);
+        
+        // Reset line dash
+        doc.setLineDash([]);
+    }
+
+    renderStapleAndFoldLines(doc) {
+        const centerX = this.pageWidth / 2;
+        const stapleOffset = 6; // Distance from center line
+        const stapleY1 = this.pageHeight * 0.35; // Upper position
+        const stapleY2 = this.pageHeight * 0.65; // Lower position
+        const stapleLength = 10; // Length of staple guide lines
+
+        // First render the fold line
+        this.renderFoldLine(doc);
+
+        // Then add staple lines (vertical lines parallel to spine)
+        doc.setLineWidth(0.4);
+        doc.setDrawColor(150, 150, 150);
+        doc.setLineDash([]);
+
+        // Left staple line
+        const leftStapleX = centerX - stapleOffset;
+        doc.line(leftStapleX, stapleY1 - stapleLength/2, leftStapleX, stapleY1 + stapleLength/2);
+        doc.line(leftStapleX, stapleY2 - stapleLength/2, leftStapleX, stapleY2 + stapleLength/2);
+
+        // Right staple line
+        const rightStapleX = centerX + stapleOffset;
+        doc.line(rightStapleX, stapleY1 - stapleLength/2, rightStapleX, stapleY1 + stapleLength/2);
+        doc.line(rightStapleX, stapleY2 - stapleLength/2, rightStapleX, stapleY2 + stapleLength/2);
     }
 
     renderBookletPage(doc, leftPage, rightPage) {
@@ -179,23 +227,114 @@ class HymnalPrinter {
 
         if (page.type === 'title') {
             this.renderTitlePage(doc, xStart);
-        } else if (page.type === 'content') {
+        }else if (page.type === 'content') {
             page.content.forEach(item => {
                 if (item.type === 'song') {
                     this.renderPreparedSong(doc, item.data, xStart, item.y);
                 }
             });
         }
-        // If page.type === 'blank', we don't render anything
+    }
+
+    async renderBackCoverPage(doc, xStart) {
+        const centerX = xStart + (this.columnWidth / 2);
+        let y = 30;
+
+        // QR Codes section
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(0, 0, 0);
+        doc.text('Stay Connected', centerX, y, { align: 'center' });
+        y += 12;
+
+        // Stack QR codes vertically, centered
+        const qrX = centerX - this.qrCodeSize / 2;
+
+        // Email list QR code
+        const emailUrl = 'https://docs.google.com/forms/d/1TqZYus-cnbzcF9ICdVFqH9LwDEVTybSX9xBkZ6tV19c';
+        const emailQrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&format=png&data=${encodeURIComponent(emailUrl)}`;
+        
+        try {
+            doc.addImage(emailQrUrl, 'PNG', qrX, y, this.qrCodeSize, this.qrCodeSize);
+        } catch (e) {
+            console.error('Error loading email QR code:', e);
+            // Draw placeholder
+            doc.setDrawColor(200, 200, 200);
+            doc.rect(qrX, y, this.qrCodeSize, this.qrCodeSize);
+            doc.setFontSize(8);
+            doc.setTextColor(150, 150, 150);
+            doc.text('QR Code', centerX, y + this.qrCodeSize/2, { align: 'center' });
+        }
+
+        y += this.qrCodeSize + 6;
+
+        // Email label
+        doc.setFontSize(8);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(60, 60, 60);
+        doc.text('Join Mailing List', centerX, y, { align: 'center' });
+        y += 10;
+
+        // Website QR code
+        const websiteUrl = 'https://joshuapelican.github.io/sing-for-joy';
+        const websiteQrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&format=png&data=${encodeURIComponent(websiteUrl)}`;
+        
+        try {
+            doc.addImage(websiteQrUrl, 'PNG', qrX, y, this.qrCodeSize, this.qrCodeSize);
+        } catch (e) {
+            console.error('Error loading website QR code:', e);
+            // Draw placeholder
+            doc.setDrawColor(200, 200, 200);
+            doc.rect(qrX, y, this.qrCodeSize, this.qrCodeSize);
+            doc.setFontSize(8);
+            doc.setTextColor(150, 150, 150);
+            doc.text('QR Code', centerX, y + this.qrCodeSize/2, { align: 'center' });
+        }
+
+        y += this.qrCodeSize + 6;
+
+        // Website label
+        doc.setFontSize(8);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(60, 60, 60);
+        doc.text('Digital Lyrics', centerX, y, { align: 'center' });
+
+        // Credits section at bottom
+        y = this.pageHeight - 45;
+        
+        doc.setFontSize(9);
+        doc.setFont('helvetica', 'italic');
+        doc.setTextColor(100, 100, 100);
+        doc.text('"...let them ever sing for joy."', centerX, y, { align: 'center' });
+        y += 4;
+        doc.text('- Psalm 5:11', centerX, y, { align: 'center' });
+        y += 10;
+
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(0, 0, 0);
+        doc.text('Thanks', centerX, y, { align: 'center' });
+        y += 6;
+
+        doc.setFontSize(8);
+        doc.setFont('helvetica', 'italic');
+        doc.setTextColor(60, 60, 60);
+        
+        doc.text('Jennifer Ou - Organization', centerX, y, { align: 'center' });
+        y += 4;
+        doc.text('Joshua Pelkington - Lyrics', centerX, y, { align: 'center' });
     }
 
     renderTitlePage(doc, xStart) {
+        this.renderBackCoverPage(doc, this.margin)
+
         const centerX = xStart + (this.columnWidth / 2);
         let y = 25;
 
         // Title
         doc.setFontSize(24);
         doc.setFont('helvetica', 'bold');
+        doc.setTextColor(0, 0, 0);
         doc.text('Sing For Joy', centerX, y, { align: 'center' });
         y += 10;
 
@@ -221,6 +360,7 @@ class HymnalPrinter {
         // Song list
         doc.setFontSize(9);
         doc.setFont('helvetica', 'normal');
+        doc.setTextColor(0, 0, 0);
         const tocX = xStart + 20;
         const maxTocItems = Math.min(this.allSongs.length, 25); // Limit items to fit on page
         
@@ -230,7 +370,7 @@ class HymnalPrinter {
             const tocLine = `${song.number}. ${song.name}`;
             
             // Check if we need to wrap the text
-            const maxWidth = this.columnWidth - 20;
+            const maxWidth = this.columnWidth - 40;
             const lines = this.splitTextToFitWidth(doc, tocLine, maxWidth, 9);
             
             lines.forEach(line => {
@@ -458,7 +598,7 @@ class HymnalPrinter {
                 <div class="print-dialog">
                     <h2>Generate Sing For Joy PDF</h2>
                     <p class="dialog-description">
-                        This will create a PDF formatted booklet of the current song list in booklet form.
+                        This will create a PDF formatted as a booklet with QR codes and fold guides.
                     </p>
                     
                     <div class="print-options">
@@ -469,7 +609,8 @@ class HymnalPrinter {
                                 <li>Enable "Print on both sides"</li>
                                 <li>Choose "Flip on short edge"</li>
                                 <li>Print at 100% scale (no fit to page)</li>
-                                <li>After printing, fold the stack in half and staple on the fold</li>
+                                <li>After printing, fold the stack in half along the center line</li>
+                                <li>Staple along the spine at the marked positions</li>
                             </ul>
                         </div>
                     </div>
