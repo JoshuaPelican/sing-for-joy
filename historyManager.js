@@ -19,7 +19,7 @@ class HistoryManager {
 
     // Navigate to a new route
     navigate(path) {
-        const url = new URL("#" + path, window.location.origin);
+        const url = new URL("#" + path, window.location.origin + window.location.pathname + "/");
         if (url.hash !== window.location.hash) {
             window.history.pushState({}, '', url);
             this.handleRoute();
