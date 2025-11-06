@@ -31,8 +31,6 @@ class HistoryManager {
         const hash = window.location.hash.slice(1) || "/";
         const [path, data] = hash.split('?');
         const displayFunc = this.routes[path] || this.routes['*'];
-
-        console.log( {hash: hash, path: path, data: data, func: displayFunc})
         
         if (displayFunc) {
             this.currentRoute = path;
