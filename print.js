@@ -2,7 +2,7 @@ class HymnalPrinter {
     constructor() {
         this.pageWidth = 279.4; // Letter landscape width in mm
         this.pageHeight = 215.9; // Letter landscape height in mm
-        this.margin = 12;
+        this.margin = 14;
         this.topMargin = 10; // Smaller top margin
         this.columnGap = 40;
         this.columnWidth = (this.pageWidth - (2 * this.margin) - this.columnGap) / 2;
@@ -221,7 +221,7 @@ class HymnalPrinter {
         // Song list
         doc.setFontSize(9);
         doc.setFont('helvetica', 'normal');
-        const tocX = xStart + 25;
+        const tocX = xStart + 20;
         const maxTocItems = Math.min(this.allSongs.length, 25); // Limit items to fit on page
         
         for (let i = 0; i < maxTocItems; i++) {
@@ -458,13 +458,12 @@ class HymnalPrinter {
                 <div class="print-dialog">
                     <h2>Generate Sing For Joy PDF</h2>
                     <p class="dialog-description">
-                        This will create a PDF formatted of the current song list in booklet form.
+                        This will create a PDF formatted booklet of the current song list in booklet form.
                     </p>
                     
                     <div class="print-options">
-                        <h3>Print Settings</h3>
+                        <h3 style="margin: 0">Print Settings</h3>
                         <div class="print-tip">
-                            <strong>For booklet printing:</strong>
                             <ul>
                                 <li>Select "Landscape" orientation</li>
                                 <li>Enable "Print on both sides"</li>
