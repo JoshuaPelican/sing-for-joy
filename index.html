@@ -11,21 +11,21 @@
 </head>
 
 <body>
-    <button class="focus-button" onclick="focusMode()"><strong>⛶</strong></button>
+    <button class="focus-button" id="focusButton"><strong>⛶</strong></button>
     <nav id="toc" class="active">
         <h2 class="song-title">Sing For Joy</h2>
         <h3>Song List & Lyrics</h3>
         <div id="songList"></div>
         <div class="line"></div>
-        <div class="song-item" id="archiveButton" onclick="toggleArchive()">Song Archive</div>
+        <div class="song-item" id="archiveButton">Song Archive</div>
     </nav>
 
     <main id="song">
-        <a class="back-link" onclick="toggleSongDisplay(false)">← Back to songs</a>
+    <a class="back-link" id="backButton">← Back to songs</a>
         <div id="songContent"></div>
     </main>
+    <div class="line"></div>
     <footer>
-        <div class="line"></div>
         <h3>Thanks</h3>
         <p class="credits">
             <i>
@@ -40,6 +40,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
     <script src="focus.js"></script>
+    <script src="historyManager.js"></script>
     <script src="song-list.js"></script>
     <script src="song-display.js"></script>
 </body>

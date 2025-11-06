@@ -36,7 +36,10 @@ body {
     padding: 15px;
     max-width: 600px;
     margin: 0 auto;
-    touch-action: none;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 a {
@@ -79,13 +82,13 @@ h3 {
     text-align: center;
 }
 
-.song-list ol{
+.song-list{
     list-style-position: inside;
 }
 
 .line{
     width: 300px;
-    margin: 10px 0;
+    margin: 15px 0;
     border: 1px solid var(--accent);
 }
 
@@ -113,8 +116,6 @@ h3 {
     display: flex;
     align-items: center;
     flex-direction: column;
-    margin-bottom: 25px;
-    padding-bottom: 15px;
 }
 
 .song-title {
@@ -168,7 +169,6 @@ h3 {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 5px;
 }
 
 #songList h3{
