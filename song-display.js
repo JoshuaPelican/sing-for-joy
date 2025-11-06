@@ -73,10 +73,6 @@ function toggleSongDisplay(isActive){
     else{
         songPage.classList.remove('active');
         tocPage.classList.add('active');
-        // When going back to list, update URL if needed
-        if (!window.location.hash || window.location.hash === '#') {
-            navigateToHome();
-        }
     }
 }
 
