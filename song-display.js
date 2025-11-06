@@ -139,6 +139,7 @@ const router = new HistoryManager();
 router.register('/', displayHome)
     .register('/archive', displayArchive)
     .register('/song', (data) => displaySong(data))
+    .register('/print', displayPrint)
     .register('*', displayHome)
     .init();
 

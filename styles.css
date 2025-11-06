@@ -78,7 +78,7 @@ h3 {
 }
 
 .credits{
-    color: var(--font-head);
+    color: var(--font-sub);
     text-align: center;
 }
 
@@ -229,5 +229,171 @@ footer{
 
     .section-lyrics {
         font-size: .79em;
+    }
+}
+
+
+
+
+
+
+/*
+    Print Styles
+*/
+
+/* Print Dialog Styles */
+.print-dialog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+}
+
+.print-dialog {
+    background: var(--background);
+    border-radius: 8px;
+    padding: 30px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.print-dialog h2 {
+    color: var(--font-head);
+    margin-bottom: 15px;
+}
+
+.print-dialog h3 {
+    color: var(--font-sub);
+    margin: 20px 0 10px;
+    font-size: 1rem;
+}
+
+.dialog-description {
+    color: var(--font-body);
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.print-options {
+    background: var(--background-accent);
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+.print-tip {
+    font-size: 0.9rem;
+    color: var(--font-body);
+}
+
+.print-tip ul {
+    margin: 10px 0 0 20px;
+}
+
+.print-tip li {
+    margin: 5px 0;
+}
+
+.dialog-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.btn-primary,
+.btn-secondary {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-width: 120px;
+}
+
+.btn-primary {
+    background: var(--accent);
+    color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+    opacity: 0.9;
+}
+
+.btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-secondary {
+    background: var(--background-accent);
+    color: var(--font-body);
+}
+
+.btn-secondary:hover {
+    background: var(--highlight);
+}
+
+.spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.print-status {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.print-status.loading {
+    background: var(--highlight);
+    color: var(--font-body);
+}
+
+.print-status.success {
+    background: #d4f4dd;
+    color: #2e7d32;
+}
+
+.print-status.error {
+    background: #ffebee;
+    color: var(--error);
+}
+
+@media (max-width: 480px) {
+    .print-dialog {
+        padding: 20px;
+    }
+
+    .dialog-buttons {
+        flex-direction: column;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        width: 100%;
     }
 }
