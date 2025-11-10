@@ -49,6 +49,20 @@ async function displaySong(songData) {
     toggleSongDisplay(true);
 }
 
+function displayPrint() {
+    const html = hymnalPrinter.createPrintPageContent();
+    setSongContent(html);
+    toggleSongDisplay(true);
+    
+    // Attach event listener after content is added to DOM
+    setTimeout(() => {
+        const generateBtn = document.getElementById('generatePdfBtn');
+        if (generateBtn) {
+            generateBtn.addEventListener('click', () => hymnalPrinter.handleGeneratePDF());
+        }
+    }, 0);
+}
+
 function setSongContent(htmlContent){
     songContent.innerHTML = htmlContent;
 }
@@ -155,6 +169,10 @@ function navSong(songID){
     router.navigate(`/song?id=${songID}`)
 }
 
+function navPrint(){
+    router.navigate("/print");
+}
+
 async function displayHome(){
     tocSongList.innerHTML = '';
     toggleSongDisplay(false);
@@ -168,7 +186,9 @@ async function displayHome(){
     const songList = songFiles[0];
 
     // create date header
-    const header = document.createElement("h3");
+    const header = document.createElement("p");
+    header.classList.add("credits")
+    header.style.marginTop = "10px";
     header.innerText = songList.date;
     tocSongList.appendChild(header);
 
@@ -190,7 +210,9 @@ async function displayArchive() {
 
     for (const songList of songFiles){
         // create date header
-        const header = document.createElement("h3");
+        const header = document.createElement("p");
+        header.classList.add("credits")
+        header.style.marginTop = "10px";
         header.innerText = songList.date;
         tocSongList.appendChild(header);
 

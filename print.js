@@ -184,10 +184,10 @@ class HymnalPrinter {
 
     renderStapleAndFoldLines(doc) {
         const centerX = this.pageWidth / 2;
-        const stapleOffset = 6; // Distance from center line
-        const stapleY1 = this.pageHeight * 0.35; // Upper position
-        const stapleY2 = this.pageHeight * 0.65; // Lower position
-        const stapleLength = 10; // Length of staple guide lines
+        const stapleOffset = 7; // Distance from center line
+        const stapleY1 = this.pageHeight * 0.15; // Upper position
+        const stapleY2 = this.pageHeight * 0.85; // Lower position
+        const stapleLength = 8; // Length of staple guide lines
 
         // First render the fold line
         this.renderFoldLine(doc);
@@ -587,62 +587,36 @@ class HymnalPrinter {
         });
     }
 
-    showPrintDialog() {
-        // Remove existing dialog if present
-        const existingDialog = document.getElementById('printDialog');
-        if (existingDialog) {
-            existingDialog.remove();
-        }
-
-        // Create dialog HTML
-        const dialogHTML = `
-            <div id="printDialog" class="print-dialog-overlay">
-                <div class="print-dialog">
-                    <h2>Generate Sing For Joy PDF</h2>
-                    <p class="dialog-description">
-                        This will create a PDF formatted as a booklet with QR codes and fold guides.
-                    </p>
-                    
-                    <div class="print-options">
-                        <h3 style="margin: 0">Print Settings</h3>
-                        <div class="print-tip">
-                            <ul>
-                                <li>Select "Landscape" orientation</li>
-                                <li>Enable "Print on both sides"</li>
-                                <li>Choose "Flip on short edge"</li>
-                                <li>Print at 100% scale (no fit to page)</li>
-                                <li>After printing, fold the stack in half along the center line</li>
-                                <li>Staple along the spine at the marked positions</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="dialog-buttons">
-                        <button id="generatePdfBtn" class="btn-primary">
-                            <span id="btnText">Generate PDF</span>
-                            <span id="btnSpinner" class="spinner" style="display: none;"></span>
-                        </button>
-                        <button id="cancelPrintBtn" class="btn-secondary">Cancel</button>
-                    </div>
-
-                    <div id="printStatus" class="print-status"></div>
-                </div>
+    createPrintPageContent() {
+        return `
+            <div class="song-header">
+                <h2 class="song-title">Generate PDF Booklet</h2>
+                <p class="song-author">Print settings and instructions</p>
+                <div class="line"></div>
             </div>
+            
+            <div class="print-instructions">
+                <h3>Print Settings</h3>
+                <ul>
+                    <li>Select "Landscape" orientation</li>
+                    <li>Enable "Print on both sides"</li>
+                    <li>Choose "Flip on short edge"</li>
+                    <li>Print at 100% scale (no fit to page)</li>
+                </ul>
+                <h3>After Printing</h3>
+                <ul>
+                    <li>Fold the each booklet stack in half along the center line</li>
+                    <li>Staple along the spine at the marked positions</li>
+                </ul>
+            </div>
+
+            <button id="generatePdfBtn" class="song-item"">
+                <span id="btnText">Generate PDF</span>
+                <span id="btnSpinner" class="spinner" style="display: none;"></span>
+            </button>
+
+            <div id="printStatus" class="print-status"></div>
         `;
-
-        // Add dialog to page
-        document.body.insertAdjacentHTML('beforeend', dialogHTML);
-
-        // Add event listeners
-        document.getElementById('generatePdfBtn').addEventListener('click', () => this.handleGeneratePDF());
-        document.getElementById('cancelPrintBtn').addEventListener('click', () => this.closeDialog());
-        
-        // Close on overlay click
-        document.getElementById('printDialog').addEventListener('click', (e) => {
-            if (e.target.id === 'printDialog') {
-                this.closeDialog();
-            }
-        });
     }
 
     async handleGeneratePDF() {
@@ -653,10 +627,13 @@ class HymnalPrinter {
 
         // Show loading state
         btn.disabled = true;
+        btn.style.opacity = '0.5';
+        btn.style.cursor = 'not-allowed';
         btnText.style.display = 'none';
         btnSpinner.style.display = 'inline-block';
         status.textContent = 'Generating PDF...';
-        status.className = 'print-status loading';
+        status.className = 'print-status';
+        status.style.display = 'block';
 
         try {
             // Get latest songs
@@ -676,33 +653,23 @@ class HymnalPrinter {
 
             // Show success
             status.textContent = 'PDF generated successfully!';
-            status.className = 'print-status success';
+            status.style.color = "var(--success)";
             
-            setTimeout(() => this.closeDialog(), 2000);
+            //setTimeout(() => navHome(), 2000);
         } catch (error) {
             console.error('Error generating PDF:', error);
             status.textContent = 'Error generating PDF. Please try again.';
-            status.className = 'print-status error';
-            
-            // Reset button
-            btn.disabled = false;
-            btnText.style.display = 'inline';
-            btnSpinner.style.display = 'none';
+            status.style.color = 'var(--error)';
         }
-    }
 
-    closeDialog() {
-        const dialog = document.getElementById('printDialog');
-        if (dialog) {
-            dialog.remove();
-        }
+        // Reset button
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        btn.style.cursor = 'pointer';
+        btnText.style.display = 'inline';
+        btnSpinner.style.display = 'none';
     }
 }
 
 // Initialize printer instance
 const hymnalPrinter = new HymnalPrinter();
-
-// Display print dialog when navigating to /print
-async function displayPrint() {
-    hymnalPrinter.showPrintDialog();
-}
