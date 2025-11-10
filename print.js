@@ -322,9 +322,11 @@ class HymnalPrinter {
         doc.setFont('helvetica', 'italic');
         doc.setTextColor(60, 60, 60);
         
-        doc.text('Jennifer Ou - Organization', centerX, y, { align: 'center' });
-        y += 4;
-        doc.text('Joshua Pelkington - Lyrics', centerX, y, { align: 'center' });
+        creditList.forEach(credit => {
+            doc.text(`${credit.name} - ${credit.role}`, centerX, y, { align: 'center' });
+            y += 4;
+        });
+        y -= 4;
     }
 
     renderTitlePage(doc, xStart) {

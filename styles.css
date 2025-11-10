@@ -1,25 +1,25 @@
 :root {
-    --font-head: #2a2a2a;
-    --font-sub: #5a4a3a;
-    --font-body: #1a1a1a;
-    --background: #fdfcf8;
-    --background-accent: #f8f1e6;
-    --accent: #9a5d0f;
-    --highlight: #f5e6d0;
-    --error: #c72e2e;
-    --success: #2ca438;
+    --font-head: #e8e8e8;
+    --font-sub: #bca78d;
+    --font-body: #d4d4d4;
+    --background: #1a1816;
+    --background-accent: #24211f;
+    --accent: #a97e47;
+    --highlight: #4b4029;
+    --error: #ff6b6b;
 }
 
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: light) {
     :root {
-        --font-head: #e8e8e8;
-        --font-sub: #bca78d;
-        --font-body: #d4d4d4;
-        --background: #1a1816;
-        --background-accent: #24211f;
-        --accent: #a97e47;
-        --highlight: #2d2618;
-        --error: #ff6b6b;
+            --font-head: #2a2a2a;
+            --font-sub: #5a4a3a;
+            --font-body: #121212;
+            --background: #fdfcf8;
+            --background-accent: #f8f1e6;
+            --accent: #9a5d0f;
+            --highlight: #f5e6d0;
+            --error: #c72e2e;
+            --success: #2ca438;
     }
 }
 
@@ -95,7 +95,7 @@ h3 {
 .line {
     width: 300px;
     margin: 15px 0;
-    border: 1px solid var(--accent);
+    border-bottom: 1px solid var(--accent);
 }
 
 .song-item {
@@ -128,13 +128,11 @@ h3 {
     font-weight: 700;
     color: var(--font-head);
     margin-bottom: 8px;
-    margin-top: 35px;
 }
 
 .song-author {
     font-size: 0.9rem;
     color: var(--font-sub);
-    font-style: italic;
 }
 
 .lyrics-container {
@@ -194,7 +192,7 @@ footer {
 
 #archiveButton,
 #backButton, #generatePdfBtn {
-    background-color: var(--accent);
+    background-color: var(--highlight);
     color: var(--font-body);
 }
 
@@ -205,7 +203,7 @@ footer {
 }
 
 #backButton{
-    margin-bottom: 50px;
+    margin-bottom: 35px;
 }
 
 /* Larger screens */
@@ -263,7 +261,7 @@ footer {
 .print-instructions {
     width: 100%;
     max-width: 500px;
-    margin: 20px 0;
+    margin-bottom: 20px;
 }
 
 .print-instructions h3 {

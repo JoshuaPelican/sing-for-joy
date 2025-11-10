@@ -21,31 +21,27 @@
     </nav>
 
     <main id="song">
+        <div class="song-item" id="backButton" onclick="router.back()">← Back</div>
         <div id="songContent"></div>
         <div class="line"></div>
-        <div class="song-item" id="backButton">← Back</div>
+        <div class="song-item" id="backButton" onclick="router.back()">← Back</div>
     </main>
     <footer class="active">
         <div class="line"></div>
         <p class="credits"><i>"...let them ever sing for joy."</i> - Psalm 5:11</p>
         <br>
         <h3>Thanks</h3>
-        <p class="credits">
-            <i>
-                Jennifer Ou - Organization <br>
-                <!--Daniel Yen - Hosting<br>-->
-                Joshua Pelkington - Lyrics
-            </i>
+        <p class="credits" id="credits">
         </p>
         <p><a href="https://docs.google.com/forms/d/1TqZYus-cnbzcF9ICdVFqH9LwDEVTybSX9xBkZ6tV19c" target="_blank">
             Join the mailing list↗</a></p>
     </footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+    <script src="config.js"></script>
     <script src="focus.js"></script>
     <script src="historyManager.js"></script>
     <script src="print.js"></script>
-    <script src="song-list.js"></script>
     <script src="song-display.js"></script>
 </body>
 

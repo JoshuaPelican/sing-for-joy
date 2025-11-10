@@ -5,6 +5,7 @@ const songContent = document.getElementById("songContent");
 const tocPage = document.getElementById("toc");
 const tocSongList = document.getElementById("songList");
 const archiveButton = document.getElementById("archiveButton")
+const credits = document.getElementById("credits");
 const footer = document.querySelector("footer");
 
 function buildSong(song){
@@ -37,8 +38,8 @@ function buildSong(song){
     </div>
     <div class="song-footer">
         <div class="line"></div>
-        <p class="song-author">Author(s): ${song.author}</p>
-        ${song.artist ? `<p class="song-author">Artist/Arrangement: ${song.artist}</p>` : ""}
+        <p class="song-author"><b>Author${song.author.split(',').length > 1 ? 's' : ''}</b> - ${song.author}</p>
+        ${song.artist ? `<p class="song-author"><b>Artist</b> - ${song.artist}</p>` : ""}
     </div>`;
     return html;
 }
@@ -198,6 +199,7 @@ async function displayHome(){
     const header = document.createElement("p");
     header.classList.add("credits")
     header.style.marginTop = "10px";
+    header.style.fontWeight = "bold";
     header.innerText = songList.date;
     tocSongList.appendChild(header);
 
@@ -222,6 +224,7 @@ async function displayArchive() {
         const header = document.createElement("p");
         header.classList.add("credits")
         header.style.marginTop = "10px";
+        header.style.fontWeight = "bold";
         header.innerText = songList.date;
         tocSongList.appendChild(header);
 
@@ -241,5 +244,11 @@ function updateArchiveButton(isArchive) {
     }
 }
 
+function loadCredits(){
+    creditList.forEach(credit => {
+        credits.innerHTML += `<b>${credit.name}</b> - ${credit.role}<br>`;
+    });
+}
+
 const backButton = document.getElementById("backButton");
-backButton.addEventListener("click", () => router.back())
+loadCredits();

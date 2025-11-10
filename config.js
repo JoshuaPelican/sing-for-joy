@@ -33,3 +33,18 @@ const songFiles = [
         ]
     }
 ];
+
+const credits = [
+    {
+        "name": "Jennifer Ou",
+        "role": "Organization"
+    },
+    {
+        "name": "Daniel Yen",
+        "role": "Location"
+    },
+    {
+        "name": "Joshua Pelkington",
+        "role": "Lyrics"
+    }
+]
