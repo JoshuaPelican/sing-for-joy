@@ -3,16 +3,16 @@ class HymnalPrinter {
         this.pageWidth = 279.4; // Letter landscape width in mm
         this.pageHeight = 215.9; // Letter landscape height in mm
         this.margin = 14;
-        this.topMargin = 10; // Smaller top margin
+        this.topMargin = 10;
         this.columnGap = 40;
         this.columnWidth = (this.pageWidth - (2 * this.margin) - this.columnGap) / 2;
-        this.lineHeight = 4.25; // Reduced from 5
-        this.labelWidth = 20; // Reduced from 25
+        this.lineHeight = 4.25;
+        this.labelWidth = 20;
         this.fontSize = {
-            title: 11, // Reduced from 12
-            author: 8,  // Reduced from 9
-            sectionLabel: 8.5, // Reduced from 8
-            lyrics: 8.5  // Reduced from 10
+            title: 11,
+            author: 9,
+            sectionLabel: 8.75,
+            lyrics: 8.75 
         };
         this.allSongs = []; // Store all songs for TOC
         this.date;
@@ -244,7 +244,7 @@ class HymnalPrinter {
         doc.setFontSize(12);
         doc.setFont('helvetica', 'bold');
         doc.setTextColor(0, 0, 0);
-        doc.text('Stay Connected', centerX, y, { align: 'center' });
+        doc.text('Other Stuff', centerX, y, { align: 'center' });
         y += 12;
 
         // Stack QR codes vertically, centered
@@ -302,6 +302,7 @@ class HymnalPrinter {
         // Credits section at bottom
         y = this.pageHeight - 45;
         
+        /*
         doc.setFontSize(9);
         doc.setFont('helvetica', 'italic');
         doc.setTextColor(100, 100, 100);
@@ -309,6 +310,7 @@ class HymnalPrinter {
         y += 4;
         doc.text('- Psalm 5:11', centerX, y, { align: 'center' });
         y += 10;
+        */
 
         doc.setFontSize(10);
         doc.setFont('helvetica', 'bold');
@@ -358,7 +360,7 @@ class HymnalPrinter {
         y += 8;
 
         // Song list
-        doc.setFontSize(9);
+        doc.setFontSize(11);
         doc.setFont('helvetica', 'normal');
         doc.setTextColor(0, 0, 0);
         const tocX = xStart + 20;
