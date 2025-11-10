@@ -117,7 +117,7 @@ h3 {
     cursor: default;
 }
 
-.song-header {
+.song-header, .song-footer {
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -165,24 +165,26 @@ h3 {
     -webkit-hyphens: auto;
 }
 
-#toc,
-#song {
-    display: none;
-}
-
-#toc.active,
-#song.active {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
 footer {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 10px;
 }
+
+#toc,
+#song, footer {
+    display: none;
+}
+
+#toc.active,
+#song.active, footer.active {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
 
 .error-msg {
     color: var(--error);
@@ -200,6 +202,10 @@ footer {
 #backButton:hover, #generatePdfBtn:hover {
     opacity: 0.75;
     background: var(--accent);
+}
+
+#backButton{
+    margin-bottom: 50px;
 }
 
 /* Larger screens */

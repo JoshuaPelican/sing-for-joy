@@ -1,7 +1,9 @@
 name: Hosanna
-author: Hillsong Chapel
+author: Brooke Ligertwood
+artist: Hillsong Chapel
 
-arrangement: [verse1, verse2, chorus, verse3, verse4, chorus, chorus2, chorus, chorus]
+arrangement:
+  [verse1, verse2, chorus, verse3, verse4, chorus, chorus2, chorus, chorus]
 
 elements:
   verse1:

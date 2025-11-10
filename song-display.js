@@ -5,12 +5,12 @@ const songContent = document.getElementById("songContent");
 const tocPage = document.getElementById("toc");
 const tocSongList = document.getElementById("songList");
 const archiveButton = document.getElementById("archiveButton")
+const footer = document.querySelector("footer");
 
 function buildSong(song){
     let html = `
         <div class="song-header">
             <h1 class="song-title">${song.name}</h1>
-            <p class="song-author">${song.author}</p>
             <div class="line"></div>
         </div>
         <div class="lyrics-container">
@@ -33,7 +33,13 @@ function buildSong(song){
         `;
     });
 
-    html += '</div>';
+    html += `
+    </div>
+    <div class="song-footer">
+        <div class="line"></div>
+        <p class="song-author">Author(s): ${song.author}</p>
+        ${song.artist ? `<p class="song-author">Artist/Arrangement: ${song.artist}</p>` : ""}
+    </div>`;
     return html;
 }
 
@@ -83,10 +89,12 @@ function toggleSongDisplay(isActive){
     if(isActive){
         tocPage.classList.remove('active');
         songPage.classList.add('active');
+        footer.classList.remove('active');
     }
     else{
         songPage.classList.remove('active');
         tocPage.classList.add('active');
+        footer.classList.add('active');
     }
 }
 
@@ -135,6 +143,7 @@ async function fetchAndCacheSong(songID){
             id: songID,
             name: parsed.name,
             author: parsed.author,
+            artist: parsed.artist,
             arrangement: parsed.arrangement,
             elements: parsed.elements,
             error: false
