@@ -5,7 +5,7 @@
     --background: #1a1816;
     --background-accent: #24211f;
     --accent: #a97e47;
-    --highlight: #4b4029;
+    --highlight: #4b3d29;
     --error: #ff6b6b;
 }
 
@@ -15,9 +15,9 @@
             --font-sub: #5a4a3a;
             --font-body: #121212;
             --background: #fdfcf8;
-            --background-accent: #f8f1e6;
+            --background-accent: #fbf2e3;
             --accent: #9a5d0f;
-            --highlight: #f5e6d0;
+            --highlight: #fae1b5;
             --error: #c72e2e;
             --success: #2ca438;
     }

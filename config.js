@@ -34,7 +34,7 @@ const songFiles = [
     }
 ];
 
-const credits = [
+const creditList = [
     {
         "name": "Jennifer Ou",
         "role": "Organization"
