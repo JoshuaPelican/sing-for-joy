@@ -7,6 +7,7 @@
     --accent: #a97e47;
     --highlight: #4b3d29;
     --error: #ff6b6b;
+    --success: #54d260;
 }
 
 @media (prefers-color-scheme: light) {
