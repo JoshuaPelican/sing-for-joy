@@ -3,6 +3,7 @@ class HistoryManager {
     constructor() {
         this.routes = {};
         this.currentRoute = null;
+        this.hasHistory = false;
     }
 
     // Register a route with its handler
@@ -22,9 +23,11 @@ class HistoryManager {
         const url = new URL("#" + path, window.location.origin + window.location.pathname);
         if (url.hash !== window.location.hash) {
             window.history.pushState({}, '', url);
+            this.hasHistory = true;
             this.handleRoute();
         }
     }
+
 
     // Handle current route
     handleRoute() {
@@ -45,7 +48,11 @@ class HistoryManager {
 
     // Programmatically go back
     back() {
-        window.history.back();
+        if (this.hasHistory) {
+            window.history.back();
+        } else {
+            this.navigate("/");
+        }
     }
 
     // Programmatically go forward
