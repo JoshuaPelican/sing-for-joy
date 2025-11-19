@@ -47,7 +47,6 @@ body {
 a {
     color: var(--accent);
     cursor: pointer;
-    margin-bottom: 20px;
     display: inline-block;
     text-decoration: none;
 }
