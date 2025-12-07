@@ -87,12 +87,6 @@ class HymnalPrinter {
             type: 'title',
             content: []
         });
-        
-        // Page 2 is the back cover with QR codes and credits
-        pages.push({
-            type: 'backcover',
-            content: []
-        });
 
         // Add songs to pages starting from page 3
         songNumber = 1;
@@ -134,17 +128,26 @@ class HymnalPrinter {
             });
         }
 
+
+
+
         return pages;
     }
 
     arrangeForBooklet(pages) {
         // Ensure pages count is divisible by 4
-        while (pages.length % 4 !== 0) {
+        while (pages.length % 4 !== 3) {
             pages.push({
                 type: 'blank',
                 content: []
             });
         }
+
+        // Page 2 is the back cover with QR codes and credits
+        pages.push({
+            type: 'backcover',
+            content: []
+        });
 
         const n = pages.length;
         const sheets = [];
@@ -227,7 +230,12 @@ class HymnalPrinter {
 
         if (page.type === 'title') {
             this.renderTitlePage(doc, xStart);
-        }else if (page.type === 'content') {
+        }
+        else if(page.type === 'backcover')
+        {
+            this.renderBackCoverPage(doc, xStart);
+        }
+        else if (page.type === 'content') {
             page.content.forEach(item => {
                 if (item.type === 'song') {
                     this.renderPreparedSong(doc, item.data, xStart, item.y);
@@ -330,8 +338,6 @@ class HymnalPrinter {
     }
 
     renderTitlePage(doc, xStart) {
-        this.renderBackCoverPage(doc, this.margin)
-
         const centerX = xStart + (this.columnWidth / 2);
         let y = 25;
 
@@ -539,7 +545,8 @@ class HymnalPrinter {
                 'tag': 'Tag',
                 'outro': 'Outro',
                 'intro': 'Intro',
-                'interlude': 'Interlude'
+                'interlude': 'Interlude',
+                'refrain': 'Refrain'
             };
             
             const label = typeMap[type.toLowerCase()] || type;

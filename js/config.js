@@ -1,5 +1,21 @@
 const songFiles = [
     {
+        "date": "12-13-2025",
+        "songs": [
+            "goodness-of-god",
+            "the-son-of-god-came-down",
+            "joy-to-the-world",
+            "all-sufficient-merit",
+            "hosanna-hosanna",
+            "god-of-every-grace",
+            "if-christ-is-mine",
+            "your-great-name",
+            "never-cease-to-praise",
+            "i-know-whom-i-have-believed",
+            "angels-we-have-heard-on-high"
+        ]
+    },
+    {
         "date": "10-24-2025",
         "songs": [
             'if-christ-is-mine',

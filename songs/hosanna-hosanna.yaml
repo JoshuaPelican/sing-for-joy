@@ -1,0 +1,40 @@
+name: Hosanna, Hosanna
+author: Eric McAllister
+
+arrangement: [verse1, verse2, chorus, verse3, verse4, chorus, bridge]
+
+elements:
+  verse1:
+    - We suffered under silent idols,
+    - Ages of sorrow prolonged;
+    - Then came a Savior whose arrival
+    - Would fill the world with song
+  verse2:
+    - Heaven had promised, Heaven answered
+    - "With a gift we could not dream:"
+    - Jesus, the Hand of God's salvation,
+    - Jesus, the King of kings.
+  chorus:
+    - Hosanna, Hosanna! The King of Glory
+    - Jesus, the only God who saves
+    - Hosanna, we sing of Your might and mercy,
+    - How excellent is Your name
+  verse3:
+    - What other god would span such distance,
+    - By taking on flesh and blood?
+    - Only the Prince of Lovingkindness,
+    - Broken in death for us.
+  verse4:
+    - Up from the grave He rose in power,
+    - Soon we will see Him revealed;
+    - Then every soul will bow to honor
+    - Jesus, unparalleled!
+  bridge:
+    - Who compares to You, Lord, among the gods?
+    - Hosanna! The King of glory!
+    - "To your name alone saving strength belongs:"
+    - Hosanna! The King of glory!
+    - And the earth shall sing when you come again
+    - Hosanna! The King of glory!
+    - All authority in your nail scarred hands
+    - Jesus, forever worthy!
