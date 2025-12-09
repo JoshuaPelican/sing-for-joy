@@ -8,7 +8,7 @@ const songFiles = [
             "all-sufficient-merit",
             "hosanna-hosanna",
             "god-of-every-grace",
-            "if-christ-is-mine",
+            "joy-has-dawned-upon-the-world",
             "your-great-name",
             "never-cease-to-praise",
             "i-know-whom-i-have-believed",
