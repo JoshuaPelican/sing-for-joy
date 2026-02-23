@@ -10,6 +10,7 @@ const songFiles = [
 			"come-to-jesus",
 			"i-serve-a-risen-savior",
 			"jesus-keep-me-near-the-cross",
+			"all-sufficient-merit",
 		],
 	},
 	{
