@@ -117,6 +117,19 @@ h3 {
     cursor: default;
 }
 
+.song-item:has(.song-date) {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.song-date {
+    opacity: 0.6;
+    font-size: 0.85em;
+    margin-left: 1em;
+    white-space: nowrap;
+}
+
 .song-header, .song-footer {
     display: flex;
     align-items: center;

@@ -4,12 +4,12 @@ const songPage = document.getElementById("song");
 const songContent = document.getElementById("songContent");
 const tocPage = document.getElementById("toc");
 const tocSongList = document.getElementById("songList");
-const archiveButton = document.getElementById("archiveButton")
+const archiveButton = document.getElementById("archiveButton");
 const credits = document.getElementById("credits");
 const footer = document.querySelector("footer");
 
-function buildSong(song){
-    let html = `
+function buildSong(song) {
+	let html = `
         <div class="song-header">
             <h1 class="song-title">${song.name}</h1>
             <div class="line"></div>
@@ -17,198 +17,202 @@ function buildSong(song){
         <div class="lyrics-container">
     `;
 
-    song.arrangement.forEach(elementKey => {
-        const lyrics = song.elements[elementKey];
-        if (!lyrics) return;
+	song.arrangement.forEach((elementKey) => {
+		const lyrics = song.elements[elementKey];
+		if (!lyrics) return;
 
-        html += `
+		html += `
             <div class="song-section">
-                <div class="section-label">${elementKey.replace(/(\D+)(\d+)/, '$1 $2')}</div>
+                <div class="section-label">${elementKey.replace(/(\D+)(\d+)/, "$1 $2")}</div>
                 <div class="section-lyrics">
-                    ${lyrics.map((lyric, i) => {
-                        if (!lyric) return `<div style="margin: 0.75em 0;"></div>`;
-                        return `<div>${lyric}</div>`;
-                    }).join('')}
+                    ${lyrics
+						.map((lyric, i) => {
+							if (!lyric)
+								return `<div style="margin: 0.75em 0;"></div>`;
+							return `<div>${lyric}</div>`;
+						})
+						.join("")}
                 </div>
             </div>
         `;
-    });
+	});
 
-    html += `
+	html += `
     </div>
     <div class="song-footer">
         <div class="line"></div>
-        <p class="song-author"><b>Author${song.author.split(',').length > 1 ? 's' : ''}</b> - ${song.author}</p>
+        <p class="song-author"><b>Author${song.author.split(",").length > 1 ? "s" : ""}</b> - ${song.author}</p>
         ${song.artist ? `<p class="song-author"><b>Artist</b> - ${song.artist}</p>` : ""}
     </div>`;
-    return html;
+	return html;
 }
 
 async function displaySong(songData) {
-    const song = await tryGetSong(songData.params.id);
-    
-    if (!song || song.error) {
-        setSongContent(`<div class="error-msg">Error displaying song: ${songData.params.id}</div>`);
-    } else {
-        const html = buildSong(song);
-        setSongContent(html);
-    }
-    toggleSongDisplay(true);
+	const song = await tryGetSong(songData.params.id);
+
+	if (!song || song.error) {
+		setSongContent(
+			`<div class="error-msg">Error displaying song: ${songData.params.id}</div>`,
+		);
+	} else {
+		const html = buildSong(song);
+		setSongContent(html);
+	}
+	toggleSongDisplay(true);
 }
 
 function displayPrint() {
-    const html = hymnalPrinter.createPrintPageContent();
-    setSongContent(html);
-    toggleSongDisplay(true);
-    
-    // Attach event listener after content is added to DOM
-    setTimeout(() => {
-        const generateBtn = document.getElementById('generatePdfBtn');
-        if (generateBtn) {
-            generateBtn.addEventListener('click', () => hymnalPrinter.handleGeneratePDF());
-        }
-    }, 0);
+	const html = hymnalPrinter.createPrintPageContent();
+	setSongContent(html);
+	toggleSongDisplay(true);
+
+	// Attach event listener after content is added to DOM
+	setTimeout(() => {
+		const generateBtn = document.getElementById("generatePdfBtn");
+		if (generateBtn) {
+			generateBtn.addEventListener("click", () =>
+				hymnalPrinter.handleGeneratePDF(),
+			);
+		}
+	}, 0);
 }
 
-function setSongContent(htmlContent){
-    songContent.innerHTML = htmlContent;
+function setSongContent(htmlContent) {
+	songContent.innerHTML = htmlContent;
 }
 
-async function tryGetSong(songID){    
-    if(!songCache.has(songID))
-        await fetchAndCacheSong(songID);
+async function tryGetSong(songID) {
+	if (!songCache.has(songID)) await fetchAndCacheSong(songID);
 
-    return songCache.get(songID);
+	return songCache.get(songID);
 }
 
-function toggleSongDisplay(isActive){
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: 'smooth'
-    });
-    if(isActive){
-        tocPage.classList.remove('active');
-        songPage.classList.add('active');
-        footer.classList.remove('active');
-    }
-    else{
-        songPage.classList.remove('active');
-        tocPage.classList.add('active');
-        footer.classList.add('active');
-    }
+function toggleSongDisplay(isActive) {
+	window.scrollTo({
+		top: 0,
+		left: 0,
+		behavior: "smooth",
+	});
+	if (isActive) {
+		tocPage.classList.remove("active");
+		songPage.classList.add("active");
+		footer.classList.remove("active");
+	} else {
+		songPage.classList.remove("active");
+		tocPage.classList.add("active");
+		footer.classList.add("active");
+	}
 }
 
 async function buildSongList(songIDs) {
-    await Promise.all(songIDs.map(async id => await tryGetSong(id)));
+	await Promise.all(songIDs.map(async (id) => await tryGetSong(id)));
 
-    const ol = document.createElement("ol");
-    ol.classList.add("song-list");
+	const ol = document.createElement("ol");
+	ol.classList.add("song-list");
 
-    const items = await Promise.all(songIDs.map(songID => buildSongItem(songID)));
-    items.forEach(item => ol.appendChild(item));
-    return ol;
+	const items = await Promise.all(
+		songIDs.map((songID) => buildSongItem(songID)),
+	);
+	items.forEach((item) => ol.appendChild(item));
+	return ol;
 }
 
-async function buildSongItem(songID){
-    const song = await tryGetSong(songID);
-    const li = document.createElement('li');
+async function buildSongItem(songID) {
+	const song = await tryGetSong(songID);
+	const li = document.createElement("li");
 
-    if (song.error) {
-        li.className = 'song-item error';
-        li.textContent = `${songID} (NOT FOUND)`;
-    } else {
-        li.className = 'song-item';
-        li.textContent = song.name;
-        li.onclick = () => navSong(songID);
-    }
-    return li;
+	if (song.error) {
+		li.className = "song-item error";
+		li.textContent = `${songID} (NOT FOUND)`;
+	} else {
+		li.className = "song-item";
+		li.textContent = song.name;
+		li.onclick = () => navSong(songID);
+	}
+	return li;
 }
 
+async function fetchAndCacheSong(songID) {
+	if (songCache.has(songID) && !songCache.get(songID).error) {
+		return songCache.get(songID);
+	}
 
+	let songData;
+	try {
+		const response = await fetch(`songs/${songID}.yaml`);
+		if (!response.ok) throw new Error("Not found");
 
-async function fetchAndCacheSong(songID){
-    if (songCache.has(songID) && !songCache.get(songID).error) {
-        return songCache.get(songID);
-    }
+		const text = await response.text();
+		const parsed = jsyaml.load(text);
+		const song = {
+			id: songID,
+			name: parsed.name,
+			author: parsed.author,
+			artist: parsed.artist,
+			arrangement: parsed.arrangement,
+			elements: parsed.elements,
+			error: false,
+		};
 
-    let songData;
-    try {
-        const response = await fetch(`songs/${songID}.yaml`);
-        if (!response.ok) 
-            throw new Error('Not found');
-        
-        const text = await response.text();
-        const parsed = jsyaml.load(text);
-        const song = {
-            id: songID,
-            name: parsed.name,
-            author: parsed.author,
-            artist: parsed.artist,
-            arrangement: parsed.arrangement,
-            elements: parsed.elements,
-            error: false
-        };
-        
-        songData = song;
-    } catch (error) {
-        console.error(`Error loading ${songID}:`, error);
-        songData = { id: songID, error: true };
-    }
+		songData = song;
+	} catch (error) {
+		console.error(`Error loading ${songID}:`, error);
+		songData = { id: songID, error: true };
+	}
 
-    songCache.set(songID, songData);
+	songCache.set(songID, songData);
 }
 
 const router = new HistoryManager();
-router.register('/', displayHome)
-    .register('/archive', displayArchive)
-    .register('/song', (data) => displaySong(data))
-    .register('/print', displayPrint)
-    .register('*', displayHome)
-    .init();
+router
+	.register("/", displayHome)
+	.register("/archive", displayArchive)
+	.register("/song", (data) => displaySong(data))
+	.register("/print", displayPrint)
+	.register("*", displayHome)
+	.init();
 
-function navHome(){
-    router.navigate("/");
+function navHome() {
+	router.navigate("/");
 }
 
-function navArchive(){
-    router.navigate("/archive");
+function navArchive() {
+	router.navigate("/archive");
 }
 
-function navSong(songID){
-    router.navigate(`/song?id=${songID}`)
+function navSong(songID) {
+	router.navigate(`/song?id=${songID}`);
 }
 
-function navPrint(){
-    router.navigate("/print");
+function navPrint() {
+	router.navigate("/print");
 }
 
-async function displayHome(){
-    tocSongList.innerHTML = '';
-    toggleSongDisplay(false);
-    updateArchiveButton(false);
+async function displayHome() {
+	tocSongList.innerHTML = "";
+	toggleSongDisplay(false);
+	updateArchiveButton(false);
 
-    if(songFiles == null)
-    {
-        return;
-    }
+	if (songFiles == null) {
+		return;
+	}
 
-    const songList = songFiles[0];
+	const songList = songFiles[0];
 
-    // create date header
-    const header = document.createElement("p");
-    header.classList.add("credits")
-    header.style.marginTop = "10px";
-    header.style.fontWeight = "bold";
-    header.innerText = songList.date;
-    tocSongList.appendChild(header);
+	// create date header
+	const header = document.createElement("p");
+	header.classList.add("credits");
+	header.style.marginTop = "10px";
+	header.style.fontWeight = "bold";
+	header.innerText = songList.date;
+	tocSongList.appendChild(header);
 
-    // create song list
-    const list = await buildSongList(songList.songs);
-    tocSongList.appendChild(list);
-
+	// create song list
+	const list = await buildSongList(songList.songs);
+	tocSongList.appendChild(list);
 }
 
+/*
 async function displayArchive() {
     tocSongList.innerHTML = '';
     toggleSongDisplay(false);
@@ -233,21 +237,73 @@ async function displayArchive() {
         tocSongList.appendChild(list);
     }
 }
+*/
 
-function updateArchiveButton(isArchive) {
-    if (isArchive) {
-        archiveButton.textContent = "← Latest Songs";
-        archiveButton.onclick = navHome;
-    } else {
-        archiveButton.textContent = "Song Archive →";
-        archiveButton.onclick = navArchive;
-    }
+async function displayArchive() {
+	tocSongList.innerHTML = "";
+	toggleSongDisplay(false);
+	updateArchiveButton(true);
+
+	if (songFiles == null) return;
+
+	// Build a map of songID -> most recent date
+	const songDateMap = new Map();
+	for (const songList of songFiles) {
+		for (const songID of songList.songs) {
+			if (!songDateMap.has(songID)) {
+				songDateMap.set(songID, songList.date);
+			}
+		}
+	}
+
+	// Fetch all unique songs
+	const allSongIDs = [...songDateMap.keys()];
+	await Promise.all(allSongIDs.map((id) => tryGetSong(id)));
+
+	// Sort alphabetically by song name
+	allSongIDs.sort((a, b) => {
+		const nameA = songCache.get(a)?.name ?? a;
+		const nameB = songCache.get(b)?.name ?? b;
+		return nameA.localeCompare(nameB);
+	});
+
+	// Build list
+	const ol = document.createElement("ol");
+	ol.classList.add("song-list");
+
+	for (const songID of allSongIDs) {
+		const song = await tryGetSong(songID);
+		const li = document.createElement("li");
+		const date = songDateMap.get(songID);
+
+		if (song.error) {
+			li.className = "song-item error";
+			li.textContent = `${songID} (NOT FOUND)`;
+		} else {
+			li.className = "song-item";
+			li.innerHTML = `${song.name} <i class="song-date">${date}</i>`;
+			li.onclick = () => navSong(songID);
+		}
+		ol.appendChild(li);
+	}
+
+	tocSongList.appendChild(ol);
 }
 
-function loadCredits(){
-    creditList.forEach(credit => {
-        credits.innerHTML += `<b>${credit.name}</b> - ${credit.role}<br>`;
-    });
+function updateArchiveButton(isArchive) {
+	if (isArchive) {
+		archiveButton.textContent = "← Latest Songs";
+		archiveButton.onclick = navHome;
+	} else {
+		archiveButton.textContent = "Song Archive →";
+		archiveButton.onclick = navArchive;
+	}
+}
+
+function loadCredits() {
+	creditList.forEach((credit) => {
+		credits.innerHTML += `<b>${credit.name}</b> - ${credit.role}<br>`;
+	});
 }
 
 const backButton = document.getElementById("backButton");
