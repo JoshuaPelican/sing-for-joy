@@ -251,7 +251,9 @@ async function displayArchive() {
 	for (const songList of songFiles) {
 		for (const songID of songList.songs) {
 			if (!songDateMap.has(songID)) {
-				songDateMap.set(songID, songList.date);
+				songDateMap.set(songID, { last_sung: songList.date, count: 1 });
+			} else {
+				songDateMap.get(songID).count++;
 			}
 		}
 	}
@@ -274,14 +276,15 @@ async function displayArchive() {
 	for (const songID of allSongIDs) {
 		const song = await tryGetSong(songID);
 		const li = document.createElement("li");
-		const date = songDateMap.get(songID);
+		const date = songDateMap.get(songID).last_sung;
+		const count = songDateMap.get(songID).count;
 
 		if (song.error) {
 			li.className = "song-item error";
 			li.textContent = `${songID} (NOT FOUND)`;
 		} else {
 			li.className = "song-item";
-			li.innerHTML = `${song.name} <i class="song-date">${date}</i>`;
+			li.innerHTML = `${song.name} <div><i class="song-date">${date}</i><p>${count > 1 ? "+" + (count - 1) : "&nbsp&nbsp&nbsp&nbsp"}</p></div>`;
 			li.onclick = () => navSong(songID);
 		}
 		ol.appendChild(li);

@@ -117,17 +117,23 @@ h3 {
     cursor: default;
 }
 
+.song-item > div{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    
+}
+
 .song-item:has(.song-date) {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.song-date {
+.song-date , .song-item > div > *{
     opacity: 0.6;
     font-size: 0.85em;
     margin-left: 1em;
-    white-space: nowrap;
 }
 
 .song-header, .song-footer {
