@@ -1,5 +1,21 @@
 const songFiles = [
 	{
+		date: "3-20-2026",
+		songs: [
+			"joy-has-dawned-upon-the-world",
+			"o-the-deep-deep-love-of-jesus",
+			"how-sweet-the-name-of-jesus-sounds",
+			"the-wonderful-cross",
+			"hosanna-hosanna",
+			"i-serve-a-risen-savior",
+			"nothing-but-the-blood",
+			"those-who-look-to-him",
+			"i-surrender-all",
+			"if-christ-is-mine",
+			"death-was-arrested",
+		],
+	},
+	{
 		date: "2-28-2026",
 		songs: [
 			"i-know-whom-i-have-believed",
