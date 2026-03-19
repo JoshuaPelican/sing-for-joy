@@ -4,31 +4,31 @@ author: Chris Tomlin
 arrangement: [Verse1, verse2, chorus1, chorus2, verse3, chorus1, chorus2]
 
 elements:
-  verse1:
-    - When I survey the wondrous cross
-    - on which the Prince of Glory died
-    - my richest gain I count but loss
-    - and pour contempt on all my pride
-  chorus1:
-    - O the wonderful cross,
-    - O the wonderful cross
-    - bids me come and die and
-    - find that I may truly live
-  verse2:
-    - See from His head, His hands, His feet
-    - sorrow and love flow mingled down
-    - did e'er such love and sorrow meet
-    - or thorns compose so rich a crown
-  chorus2:
-    - O the wonderful cross,
-    - O the wonderful cross
-    - all who gather here by grace
-    - draw near and bless Your name
-  verse3:
-    - Were the whole realm of nature mine
-    - That were an offering far too small
-    - Love so amazing, so divine
-    - Demands my soul, my life, my all
-  verse4:
-    - Love so amazing, so divine,
-    - demands my soul my life, my all
+    verse1:
+        - When I survey the wondrous cross
+        - on which the Prince of Glory died
+        - my richest gain I count but loss
+        - and pour contempt on all my pride
+    chorus1:
+        - O the wonderful cross,
+        - O the wonderful cross
+        - bids me come and die and
+        - find that I may truly live
+    verse2:
+        - See from His head, His hands, His feet
+        - sorrow and love flow mingled down
+        - did e'er such love and sorrow meet
+        - or thorns compose so rich a crown
+    chorus2:
+        - O the wonderful cross,
+        - O the wonderful cross
+        - all who gather here by grace
+        - draw near and bless Your name
+    verse3:
+        - Were the whole realm of nature mine
+        - That were an offering far too small
+        - Love so amazing, so divine
+        - Demands my soul, my life, my all
+    verse4:
+        - Love so amazing, so divine,
+        - demands my soul my life, my all
