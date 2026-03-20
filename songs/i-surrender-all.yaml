@@ -1,7 +1,8 @@
 name: I Surrender All
 author: Judson W. Van DeVenter
 
-arrangement: [verse1, refrain, verse2, refrain, verse3, refrain]
+arrangement:
+    [verse1, refrain, verse2, refrain, verse3, refrain, verse4, refrain]
 
 elements:
     verse1:
@@ -15,11 +16,16 @@ elements:
         - I surrender all.
     verse2:
         - All to Jesus I surrender,
-        - Make me, Savior, wholly Thine;
-        - Let me feel Thy Holy Spirit,
-        - Truly know that Thou art mine.
+        - To the One who died for me.
+        - How he gladly left his glory!
+        - Now I gladly call him King.
     verse3:
         - All to Jesus I surrender,
-        - Lord, I give myself to Thee;
-        - Fill me with Thy love and power,
-        - Let Thy blessing fall on me.
+        - Here my wealth, my gifts I bring;
+        - "Ev'ry grace poured down from heaven"
+        - "I return as praise, and sing:"
+    verse4:
+        - "All to Jesus I surrender:"
+        - All my days, my dreams, my plans;
+        - Give my life now for his kingdom;
+        - Oh how worthy is the Lamb!
