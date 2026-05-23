@@ -1,5 +1,14 @@
 const songFiles = [
 	{
+		date: "5-23-2026",
+		songs: [
+			"goodness-of-god",
+			"before-the-throne",
+			"oh-lord-my-rock-and-my-redeemer",
+			"all-sufficient-merit",
+		],
+	},
+	{
 		date: "3-20-2026",
 		songs: [
 			"joy-has-dawned-upon-the-world",
