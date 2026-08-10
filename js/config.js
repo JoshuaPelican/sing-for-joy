@@ -5,7 +5,8 @@ const songFiles = [
 			"come-to-jesus",
 			"goodness-of-god",
 			"here-on-christ-the-rock",
-			"yet-not-i"
+			"yet-not-i",
+			"praise-the-lord",
 		],
 	},
 	{
