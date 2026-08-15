@@ -105,7 +105,7 @@ const creditList = [
 		role: "Organization",
 	},
 	{
-		name: "Sharon Okune",
+		name: "Jennifer Ou",
 		role: "Location",
 	},
 	{
