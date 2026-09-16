@@ -2,7 +2,7 @@ name: Though You Slay Me
 author: Shane and Shane
 artist: Worship Initiative
 
-arrangement: verse1, chorus, verse2, chorus, bridge, chorus, ending
+arrangement: [verse1, chorus, verse2, chorus, bridge, chorus, ending]
 
 elements:
   verse1:

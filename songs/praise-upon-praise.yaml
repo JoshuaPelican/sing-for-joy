@@ -1,7 +1,7 @@
 name: Praise Upon Praise
 author: Pat Barrett
 
-arrangement: verse1, chorus, verse2, chorus, bridge, verse3, chorus2, bridge, ending
+arrangement: [verse1, chorus, verse2, chorus, bridge, verse3, chorus2, bridge, ending]
 
 elements:
   verse1:

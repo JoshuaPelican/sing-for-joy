@@ -1,7 +1,7 @@
 name: You Know What I Need
 author: Pat Barrett, David Leonard, Josh Baldwin
 
-arrangement: verse1, chorus, verse2, chorus, tag, chorus
+arrangement: [verse1, chorus, verse2, chorus, tag, chorus]
 
 elements:
   verse1:
