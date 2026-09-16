@@ -113,7 +113,7 @@ const creditList = [
 		role: "Organization",
 	},
 	{
-		name: "Jennifer Ou",
+		name: "Lily Craighead & Iris Fan",
 		role: "Location",
 	},
 	{
