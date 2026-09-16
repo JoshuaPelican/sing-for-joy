@@ -6,7 +6,7 @@ const songFiles = [
 			"you-know-what-i-need",
 			"though-you-slay-me"
 		]
-	}
+	},
 	{
 		date: "8-15-2026",
 		songs: [
