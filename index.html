@@ -3,25 +3,21 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>Sing for Joy</title>
 
-  <link rel="icon" type="image/x-icon" href="favicon.svg">
-
+  <link rel="icon" href="favicon.svg" type="image/x-icon">
   <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/song-editor.css">
-  <link rel="stylesheet" href="css/song-list-editor.css">
-  <link rel="stylesheet" href="css/dev-mode.css">
 </head>
 
 <body>
-  <!-- Focus and developer controls -->
+
+  <!-- Site toggles -->
   <div class="site-controls">
     <button
-      class="focus-button"
       id="focusButton"
+      class="site-toggle"
       type="button"
       title="Toggle focus mode"
       aria-label="Toggle focus mode"
@@ -30,8 +26,8 @@
     </button>
 
     <button
-      class="dev-button"
       id="devButton"
+      class="site-toggle"
       type="button"
       title="Enable developer mode"
       aria-label="Toggle developer mode"
@@ -41,7 +37,7 @@
     </button>
   </div>
 
-  <!-- Navigation -->
+  <!-- Home and archive navigation -->
   <nav id="toc" class="active">
     <h2 class="song-title">Sing For Joy</h2>
     <h3>Song List &amp; Lyrics</h3>
@@ -50,59 +46,52 @@
 
     <div class="line"></div>
 
-    <div class="song-item" id="archiveButton">
+    <button
+      id="archiveButton"
+      class="song-item"
+      type="button"
+    >
       Song Archive
-    </div>
+    </button>
 
-    <!-- Developer-only navigation -->
-    <div class="dev-navigation">
-      <div
-        class="song-item dev-only"
-        onclick="router.navigate('/edit')"
-      >
+    <div class="dev-navigation dev-only">
+      <a class="song-item" href="#/edit">
         + Add Song
-      </div>
+      </a>
 
-      <div
-        class="song-item dev-only"
-        onclick="router.navigate('/list')"
-      >
+      <a class="song-item" href="#/list">
         + New Song List
-      </div>
+      </a>
 
-      <div
-        class="song-item dev-only"
-        onclick="router.navigate('/list?index=0')"
-      >
+      <a class="song-item" href="#/list?index=0">
         Edit Latest List
-      </div>
+      </a>
     </div>
   </nav>
 
-  <!-- Main content -->
+  <!-- Routed content -->
   <main id="song">
-    <div class="song-item" onclick="router.back()">
+    <button
+      class="song-item back-button"
+      type="button"
+      onclick="router.back()"
+    >
       ← Back
-    </div>
+    </button>
 
     <div id="songContent"></div>
 
-    <!-- Song Editor -->
-    <div id="editorContent" hidden>
+    <!-- Song editor -->
+    <section id="editorContent" hidden>
       <div class="editor-shell">
-        <h1 id="pageTitle" class="song-title">
-          Add Song
-        </h1>
+        <h1 id="pageTitle" class="song-title">Add Song</h1>
 
-        <p id="modeDescription" class="editor-hint">
-          Create a song in the existing Sing for Joy format.
+        <p id="modeDescription" class="form-hint">
+          Create a song in the Sing for Joy format.
         </p>
 
         <form id="songForm">
-          <label for="token">
-            GitHub Personal Access Token
-          </label>
-
+          <label for="token">GitHub Personal Access Token</label>
           <input
             id="token"
             type="password"
@@ -112,7 +101,7 @@
             placeholder="github_pat_..."
           >
 
-          <p class="editor-hint">
+          <p class="form-hint">
             Used for this submission only; not saved locally.
           </p>
 
@@ -126,10 +115,9 @@
           <input id="artist" maxlength="150">
 
           <h2>Lyric Sections</h2>
-
-          <p class="editor-hint">
-            Define each section once. One lyric line per row;
-            blank lines are preserved.
+          <p class="form-hint">
+            Define each section once. Enter one lyric line per row.
+            Blank lines are preserved.
           </p>
 
           <div id="sections"></div>
@@ -139,19 +127,18 @@
           </button>
 
           <h2>Arrangement</h2>
-
-          <p class="editor-hint">
-            Add repeats and rearrange the section order
-            independently of the lyrics.
+          <p class="form-hint">
+            Arrange sections and add repeats without
+            duplicating lyrics.
           </p>
 
-          <div id="arrangementList"></div>
+          <div id="arrangementList" class="control-list"></div>
 
           <button type="button" id="addOccurrence">
             + Add Occurrence
           </button>
 
-          <div class="editor-actions">
+          <div class="form-actions">
             <button type="button" id="previewBtn">
               Preview YAML
             </button>
@@ -159,7 +146,7 @@
             <button
               type="submit"
               id="submitBtn"
-              class="editor-primary"
+              class="button-primary"
             >
               Add Song
             </button>
@@ -169,25 +156,23 @@
 
           <p
             id="status"
+            class="form-status"
             role="status"
             aria-live="polite"
           ></p>
         </form>
       </div>
-    </div>
+    </section>
 
-    <!-- Song List Editor -->
-    <div id="listEditorContent" hidden>
+    <!-- Song list editor -->
+    <section id="listEditorContent" hidden>
       <div class="editor-shell">
         <h1 id="listEditorTitle" class="song-title">
           New Song List
         </h1>
 
         <form id="listEditorForm">
-          <label for="listToken">
-            GitHub Personal Access Token
-          </label>
-
+          <label for="listToken">GitHub Personal Access Token</label>
           <input
             id="listToken"
             type="password"
@@ -201,19 +186,18 @@
           <input id="listDate" type="date" required>
 
           <h2>Songs</h2>
-
-          <p class="editor-hint">
-            Pick songs from the catalog, rearrange them,
-            or enter a song file ID.
+          <p class="form-hint">
+            Select songs from the catalog, change their order,
+            or add a song by file ID.
           </p>
 
-          <div id="listSongRows"></div>
+          <div id="listSongRows" class="control-list"></div>
 
           <button type="button" id="listAddSong">
             + Add from Catalog
           </button>
 
-          <div class="list-editor-row">
+          <div class="control-row">
             <input
               id="listNewSongID"
               placeholder="new-song-file-id"
@@ -227,36 +211,41 @@
 
           <h2>Credits</h2>
 
-          <div id="listCreditRows"></div>
+          <div id="listCreditRows" class="control-list"></div>
 
           <button type="button" id="listAddCredit">
             + Add Credit
           </button>
 
-          <p>
+          <div class="form-actions">
             <button
               type="submit"
               id="listSubmit"
-              class="editor-primary"
+              class="button-primary"
             >
               Create Song List
             </button>
-          </p>
+          </div>
 
           <p
             id="listStatus"
+            class="form-status"
             role="status"
             aria-live="polite"
           ></p>
         </form>
       </div>
-    </div>
+    </section>
 
     <div class="line"></div>
 
-    <div class="song-item" onclick="router.back()">
+    <button
+      class="song-item back-button"
+      type="button"
+      onclick="router.back()"
+    >
       ← Back
-    </div>
+    </button>
   </main>
 
   <!-- Footer -->
@@ -267,10 +256,8 @@
       <i>"...let them ever sing for joy."</i> - Psalm 5:11
     </p>
 
-    <br>
-
     <h3>Thanks</h3>
-    <p class="credits" id="credits"></p>
+    <p id="credits" class="credits"></p>
 
     <p>
       <a
@@ -301,15 +288,9 @@
   <script src="js/focus.js"></script>
   <script src="js/historyManager.js"></script>
   <script src="js/print.js"></script>
-
-  <!-- Editors -->
   <script src="js/song-editor.js"></script>
   <script src="js/song-list-editor.js"></script>
-
-  <!-- Developer mode -->
   <script src="js/dev-mode.js"></script>
-
-  <!-- Main router (load last) -->
   <script src="js/song-display.js"></script>
 </body>
 </html>

@@ -1,3 +1,8 @@
+
+/* ================================
+   THEME
+================================ */
+
 :root {
     --font-head: #e8e8e8;
     --font-sub: #bca78d;
@@ -8,46 +13,62 @@
     --highlight: #4b3d29;
     --error: #ff6b6b;
     --success: #54d260;
+
+    --radius: 5px;
+    --gap: 8px;
+    --control-height: 40px;
 }
 
 @media (prefers-color-scheme: light) {
     :root {
-            --font-head: #2a2a2a;
-            --font-sub: #5a4a3a;
-            --font-body: #121212;
-            --background: #fdfcf8;
-            --background-accent: #fbf2e3;
-            --accent: #9a5d0f;
-            --highlight: #fae1b5;
-            --error: #c72e2e;
-            --success: #2ca438;
+        --font-head: #2a2a2a;
+        --font-sub: #5a4a3a;
+        --font-body: #121212;
+        --background: #fdfcf8;
+        --background-accent: #fbf2e3;
+        --accent: #9a5d0f;
+        --highlight: #fae1b5;
+        --error: #c72e2e;
+        --success: #2ca438;
     }
 }
 
+/* ================================
+   BASE
+================================ */
+
 * {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    line-height: 1.6;
-    color: var(--font-color);
-    background: var(--background);
-    padding: 15px;
     max-width: 600px;
     margin: 0 auto;
-
+    padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    background: var(--background);
+    color: var(--font-body);
+    font: 1rem/1.6 system-ui, sans-serif;
+}
+
+h1, h2 {
+    color: var(--font-head);
+}
+
+h2 {
+    margin-bottom: var(--gap);
+}
+
+h3, .credits, .form-hint {
+    color: var(--font-sub);
 }
 
 a {
     color: var(--accent);
-    cursor: pointer;
-    display: inline-block;
     text-decoration: none;
 }
 
@@ -55,32 +76,84 @@ a:hover {
     text-decoration: underline;
 }
 
-h2 {
-    margin-bottom: 5px;
-    color: var(--font-head);
+button, input, select, textarea {
+    font: inherit;
 }
 
-h3 {
-    color: var(--font-sub);
-}
-
-.focus-button {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    padding: 10px 15px;
-    background-color: var(--background);
-    color: var(--font-sub);
-    border: none;
-    border-radius: 9999px;
+button {
     cursor: pointer;
-    font-size: 16px;
-    z-index: 9999;
+}
+
+button:disabled {
+    opacity: .45;
+    cursor: not-allowed;
+}
+
+:where(button, a, input, select, textarea):focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+.line {
+    width: min(300px, 100%);
+    margin: 15px 0;
+    border-bottom: 1px solid var(--accent);
 }
 
 .credits {
-    color: var(--font-sub);
     text-align: center;
+}
+
+/* ================================
+   ROUTED VIEWS
+================================ */
+
+#toc, #song, footer {
+    display: none;
+    width: 100%;
+}
+
+#toc.active, #song.active, footer.active {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#songContent {
+    width: 100%;
+    min-width: 0;
+}
+
+/* ================================
+   NAVIGATION AND SONG LIST
+================================ */
+
+.song-item {
+    display: block;
+    padding: 6px 8px;
+    background: var(--background-accent);
+    color: var(--font-body);
+    border: 0;
+    border-radius: var(--radius);
+    cursor: pointer;
+    text-align: inherit;
+    text-decoration: none;
+    transition: background .15s;
+}
+
+.song-item:hover {
+    background: var(--highlight);
+    text-decoration: none;
+}
+
+.song-item.error {
+    color: var(--error);
+    background: transparent;
+    cursor: default;
 }
 
 .song-list {
@@ -88,69 +161,81 @@ h3 {
     flex-direction: column;
     gap: 4px;
     margin-bottom: 10px;
-
     list-style-position: inside;
 }
 
-.line {
-    width: 300px;
-    margin: 15px 0;
-    border-bottom: 1px solid var(--accent);
+.song-list > .song-item {
+    width: 100%;
 }
 
-.song-item {
-    padding: 6px 8px;
-    color: var(--font-body);
-    background-color: var(--background-accent);
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.song-item:hover {
+#archiveButton, .back-button, #generatePdfBtn {
     background: var(--highlight);
 }
 
-.song-item.error {
-    color: var(--error);
-    background: var(--background);
-    cursor: default;
+#archiveButton:hover, .back-button:hover,
+#generatePdfBtn:hover {
+    background: var(--accent);
 }
 
-.song-item > div{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    
+#toc > .song-item {
+    margin-top: var(--gap);
 }
 
-.song-item:has(.song-date) {
+.back-button {
+    margin: 12px 0;
+}
+
+.dev-navigation {
+    display: grid;
+    gap: var(--gap);
+    margin-top: 12px;
+}
+
+.song-list-date {
+    margin-top: 10px;
+    font-weight: 700;
+    color: var(--font-sub);
+    text-align: center;
+}
+
+.archive-song {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: var(--gap);
 }
 
-.song-date , .song-item > div > *{
-    opacity: 0.6;
-    font-size: 0.85em;
-    margin-left: 1em;
+.archive-details {
+    display: flex;
+    align-items: center;
+    gap: var(--gap);
+    opacity: .65;
+    font-size: .85em;
 }
+
+#songContent > .song-item {
+    margin: 15px 0;
+}
+
+/* ================================
+   SONG DETAILS
+================================ */
 
 .song-header, .song-footer {
     display: flex;
-    align-items: center;
     flex-direction: column;
+    align-items: center;
 }
 
 .song-title {
+    margin-bottom: var(--gap);
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--font-head);
-    margin-bottom: 8px;
 }
 
 .song-author {
-    font-size: 0.9rem;
+    font-size: .9rem;
     color: var(--font-sub);
 }
 
@@ -160,77 +245,323 @@ h3 {
     gap: 40px;
 }
 
-.song-section {
-    display: block;
-}
-
 .section-label {
-    font-size: 0.7rem;
+    margin-bottom: var(--gap);
+    color: var(--font-sub);
+    font-size: .7rem;
     font-weight: 600;
     text-transform: uppercase;
-    color: var(--font-sub);
-    letter-spacing: 0.5px;
-    margin-bottom: 8px;
+    letter-spacing: .5px;
 }
 
 .section-lyrics {
     font-size: 1.1rem;
     line-height: 1.6;
-    color: var(--font-body);
-    padding-left: 0;
     hyphens: auto;
-    -webkit-hyphens: auto;
 }
 
-footer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
+.lyric-gap {
+    height: .75em;
 }
-
-#toc,
-#song, footer {
-    display: none;
-}
-
-#toc.active,
-#song.active, footer.active {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-
 
 .error-msg {
+    padding: 20px;
     color: var(--error);
     text-align: center;
-    padding: 20px;
 }
 
-#archiveButton,
-#backButton, #generatePdfBtn {
-    background-color: var(--highlight);
+/* ================================
+   SITE TOGGLES
+================================ */
+
+.site-controls {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    z-index: 9999;
+    display: flex;
+    gap: var(--gap);
+}
+
+.site-toggle {
+    position: static;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--control-height);
+    height: var(--control-height);
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: var(--background);
+    color: var(--font-sub);
+    font-size: 1rem;
+}
+
+.site-toggle:hover {
+    background: var(--highlight);
+}
+
+.dev-mode #devButton {
+    background: var(--accent);
+    color: var(--background);
+}
+
+.dev-only {
+    display: none !important;
+}
+
+.dev-mode .dev-only {
+    display: revert !important;
+}
+
+/* ================================
+   SHARED EDITOR FORMS
+================================ */
+
+#editorContent, #listEditorContent {
+    width: 100%;
+    min-width: 0;
+}
+
+.editor-shell {
+    width: 100%;
+    padding-bottom: 35px;
+}
+
+.editor-shell h1 {
+    margin: 10px 0;
+    text-align: center;
+}
+
+.editor-shell h2 {
+    margin: 28px 0 10px;
+}
+
+.form-hint {
+    margin: 5px 0 15px;
+    font-size: .88rem;
+}
+
+.editor-shell label {
+    display: block;
+    margin: 14px 0 5px;
+    color: var(--font-sub);
+    font-weight: 600;
+}
+
+.editor-shell input,
+.editor-shell textarea,
+.editor-shell select {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    min-height: var(--control-height);
+    padding: 9px 12px;
+    background: var(--background-accent);
     color: var(--font-body);
+    border: 1px solid var(--accent);
+    border-radius: var(--radius);
 }
 
-#archiveButton:hover,
-#backButton:hover, #generatePdfBtn:hover {
-    opacity: 0.75;
+.editor-shell textarea {
+    min-height: 110px;
+    resize: vertical;
+}
+
+.editor-shell button {
+    min-height: var(--control-height);
+    padding: 9px 12px;
+    border: 1px solid var(--accent);
+    border-radius: var(--radius);
+    background: var(--highlight);
+    color: var(--font-body);
+    line-height: 1.3;
+    transition: background .15s;
+}
+
+.editor-shell button:hover:not(:disabled) {
     background: var(--accent);
 }
 
-#backButton{
-    margin-bottom: 35px;
+.editor-shell .button-primary {
+    background: var(--accent);
+    color: var(--background);
+    font-weight: 700;
 }
 
-/* Larger screens */
-@media (min-width: 480px) {
-    body {
-        padding: 20px;
-    }
+.editor-shell .button-primary:hover:not(:disabled) {
+    filter: brightness(1.1);
+}
 
+/* ================================
+   SHARED LAYOUT COMPONENTS
+================================ */
+
+/* All horizontal form rows */
+
+.control-row {
+    display: flex;
+    align-items: center;
+    gap: var(--gap);
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+}
+
+.control-row > :is(input, select) {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+}
+
+.control-row > button {
+    flex: 0 0 auto;
+}
+
+/* All stacked row collections */
+
+.control-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+}
+
+.control-list > * {
+    margin: 0;
+}
+
+/* All submit / action groups */
+
+.form-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--gap);
+    margin-top: 24px;
+}
+
+/* Song lyric panels */
+
+.editor-section {
+    margin: 12px 0;
+    padding: 15px;
+    background: var(--background-accent);
+    border: 1px solid var(--accent);
+    border-radius: var(--radius);
+}
+
+.editor-section textarea {
+    width: 100%;
+}
+
+/* Standalone add buttons */
+
+#addSection, #addOccurrence,
+#listAddSong, #listAddCredit {
+    margin: 12px 0;
+}
+
+/* Controls that must remain beside each other */
+
+#listAddSongID {
+    white-space: nowrap;
+}
+
+/* YAML preview */
+
+#preview {
+    max-width: 100%;
+    margin: 15px 0;
+    padding: 15px;
+    border-radius: var(--radius);
+    background: var(--background-accent);
+    color: var(--font-body);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+/* Shared status messages */
+
+.form-status {
+    margin-top: 15px;
+    color: var(--font-sub);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.form-status.error {
+    color: var(--error);
+}
+
+.form-status.success {
+    color: var(--success);
+}
+
+/* ================================
+   FOOTER AND PRINT
+================================ */
+
+footer {
+    gap: 10px;
+    text-align: center;
+}
+
+.print-instructions {
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: 20px;
+}
+
+.print-instructions h3 {
+    margin-bottom: 10px;
+}
+
+.print-instructions ul {
+    padding-left: 20px;
+}
+
+.print-instructions li {
+    margin: 8px 0;
+}
+
+#generatePdfBtn {
+    min-height: var(--control-height);
+    padding: 9px 12px;
+    border: 0;
+    border-radius: var(--radius);
+    color: var(--font-body);
+}
+
+.spinner {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--font-body);
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.print-status {
+    display: none;
+    margin-top: 15px;
+    padding: 10px;
+    color: var(--font-body);
+    text-align: center;
+    outline: 2px solid;
+    border-radius: var(--radius);
+}
+
+/* ================================
+   RESPONSIVE
+================================ */
+
+@media (min-width: 480px) {
     .song-section {
         display: flex;
         gap: 15px;
@@ -257,72 +588,37 @@ footer {
     }
 }
 
-/* Very small screens */
+@media (max-width: 479px) {
+    body { padding: 15px; }
+
+    .site-controls {
+        top: 8px;
+        right: 8px;
+        gap: 5px;
+    }
+
+    /* Give credit inputs their own rows */
+    #listCreditRows .control-row {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    #listCreditRows .control-row > input {
+        grid-column: 1 / -1;
+        width: 100%;
+    }
+
+    #listCreditRows .control-row > button {
+        width: 100%;
+    }
+
+    /* Keep arrangement buttons compact */
+    .control-row > button {
+        padding: 7px 9px;
+    }
+}
+
 @media (max-width: 360px) {
-    .song-title {
-        font-size: 1.3rem;
-    }
-
-    .section-lyrics {
-        font-size: .79em;
-    }
-}
-
-
-
-
-
-
-/*
-    Print Page Styles
-*/
-
-.print-instructions {
-    width: 100%;
-    max-width: 500px;
-    margin-bottom: 20px;
-}
-
-.print-instructions h3 {
-    margin-bottom: 10px;
-}
-
-.print-instructions ul {
-    padding-left: 20px;
-    color: var(--font-body);
-}
-
-.print-instructions li {
-    margin: 8px 0;
-}
-
-.spinner {
-    display: inline-block;
-    width: 14px;
-    height: 14px;
-    border: 2px solid var(--font-body);
-    border-top-color: transparent;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-}
-
-#generatePdfBtn{
-    border: none;
-    padding: 10px;
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-.print-status {
-    display: none;
-    margin-top: 15px;
-    padding: 10px;
-    text-align: center;
-    color: var(--font-body);
-    outline: 2px solid;
-    border-radius: 4px;
+    .song-title { font-size: 1.3rem; }
+    .section-lyrics { font-size: .9rem; }
 }
