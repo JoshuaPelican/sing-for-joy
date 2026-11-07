@@ -2,7 +2,7 @@ const songFiles = [
   {
     "date": "11-13-2026",
     "songs": [
-      "test"
+      "all-i-have-is-christ"
     ],
     "credits": [
       {
