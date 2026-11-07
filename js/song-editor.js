@@ -482,7 +482,7 @@
             $('token').value = '';
 
             notice(
-                'Submission accepted. Check GitHub Actions to confirm the commit.',
+                'Submission accepted. Wait 30 seconds and press "ctrl" + "shift" + "R" to refresh the site.',
                 'success'
             );
 
