@@ -1,0 +1,137 @@
+
+name: Add Song
+
+on:
+  repository_dispatch:
+    types: [add_song]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: song-submissions
+  cancel-in-progress: false
+
+jobs:
+  create-song:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+
+      - name: Generate song YAML
+        env:
+          SONG_JSON: ${{ toJSON(github.event.client_payload) }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import re
+          from pathlib import Path
+
+          song = json.loads(os.environ["SONG_JSON"])
+
+          def quote(value):
+              # Double-quoted YAML strings.
+              # Escapes apostrophes, quotes, colons, etc. safely.
+              return json.dumps(value, ensure_ascii=False)
+
+          name = song["name"].strip()
+          author = song["author"].strip()
+          artist = song.get("artist", "").strip()
+          arrangement = [
+              key.strip()
+              for key in song["arrangement"].split(",")
+          ]
+          elements = song["elements"]
+
+          # Validate metadata.
+          if not name or not author:
+              raise ValueError("Name and author are required")
+
+          if any(len(value) > 150 for value in (name, author, artist)):
+              raise ValueError("Metadata exceeds length limit")
+
+          # Validate arrangement.
+          pattern = re.compile(r"^[a-z][a-z0-9]*$")
+
+          if not arrangement or any(
+              not pattern.fullmatch(key) for key in arrangement
+          ):
+              raise ValueError("Invalid arrangement")
+
+          if not isinstance(elements, dict):
+              raise ValueError("Invalid elements")
+
+          if set(arrangement) != set(elements):
+              raise ValueError("Arrangement and elements do not match")
+
+          # Build YAML.
+          lines = [
+              f"name: {quote(name)}",
+              f"author: {quote(author)}"
+          ]
+
+          if artist:
+              lines.append(f"artist: {quote(artist)}")
+
+          lines.extend([
+              "",
+              f"arrangement: {', '.join(arrangement)}",
+              "",
+              "elements:"
+          ])
+
+          for key, lyrics in elements.items():
+              if not pattern.fullmatch(key):
+                  raise ValueError("Invalid section key")
+
+              if not isinstance(lyrics, list):
+                  raise ValueError("Lyrics must be a list")
+
+              if not lyrics or not all(
+                  isinstance(line, str) for line in lyrics
+              ):
+                  raise ValueError("Invalid lyric lines")
+
+              lines.append(f"  {key}:")
+
+              for line in lyrics:
+                  lines.append(f"    - {quote(line)}")
+
+              lines.append("")
+
+          # Generate filename.
+          slug = re.sub(
+              r"[^a-z0-9]+", "-", name.lower()
+          ).strip("-")[:70].strip("-") or "song"
+
+          folder = Path("songs")
+          folder.mkdir(parents=True, exist_ok=True)
+
+          filename = folder / f"{slug}-{os.environ['RUN_ID']}.yaml"
+
+          filename.write_text(
+              "\n".join(lines).rstrip() + "\n",
+              encoding="utf-8"
+          )
+
+          print(f"Created {filename}")
+          PY
+
+      
+      - name: Commit and push
+        env:
+          SONG_NAME: ${{ github.event.client_payload.name }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add songs/
+          git commit -m "Add song: $SONG_NAME"
+          git push
+
