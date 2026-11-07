@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,47 +6,219 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
     <title>Sing for Joy</title>
+
     <link rel="icon" type="image/x-icon" href="favicon.svg">
+
+    <!-- Shared site styling -->
     <link rel="stylesheet" href="css/styles.css">
+
+    <!-- Song editor styling -->
+    <link rel="stylesheet" href="css/song-editor.css">
 </head>
 
 <body>
-    <button class="focus-button" id="focusButton"><strong>⛶</strong></button>
+    <button class="focus-button" id="focusButton">
+        <strong>⛶</strong>
+    </button>
+
+    <!-- Navigation / Song List -->
     <nav id="toc" class="active">
         <h2 class="song-title">Sing For Joy</h2>
         <h3>Song List & Lyrics</h3>
+
         <div id="songList"></div>
+
         <div class="line"></div>
-        <div class="song-item" id="archiveButton">Song Archive</div>
+
+        <div class="song-item" id="archiveButton">
+            Song Archive
+        </div>
+
+        <div class="song-item" onclick="router.navigate('/edit')">
+            + Add Song
+        </div>
     </nav>
 
+    <!-- Main SPA Content -->
     <main id="song">
-        <div class="song-item" id="backButton" onclick="router.back()">← Back</div>
+
+        <div class="song-item" onclick="router.back()">
+            ← Back
+        </div>
+
+        <!-- Existing song, print, and other content -->
         <div id="songContent"></div>
+
+        <!-- Song Editor View -->
+        <div id="editorContent" hidden>
+
+            <div class="editor-shell">
+
+                <h1 id="pageTitle" class="song-title">
+                    Add Song
+                </h1>
+
+                <p id="modeDescription" class="editor-hint">
+                    Create a song in the existing Sing for Joy format.
+                </p>
+
+                <form id="songForm">
+
+                    <!-- GitHub Authentication -->
+                    <label for="token">
+                        GitHub Personal Access Token
+                    </label>
+
+                    <input
+                        id="token"
+                        type="password"
+                        required
+                        autocomplete="off"
+                        spellcheck="false"
+                        placeholder="Fine-grained token with Contents: write"
+                    >
+
+                    <p class="editor-hint">
+                        Used for this submission only; not saved locally.
+                    </p>
+
+                    <!-- Song Metadata -->
+                    <label for="name">Song Name</label>
+                    <input
+                        id="name"
+                        maxlength="150"
+                        required
+                    >
+
+                    <label for="author">Author</label>
+                    <input
+                        id="author"
+                        maxlength="150"
+                        required
+                    >
+
+                    <label for="artist">Artist (optional)</label>
+                    <input
+                        id="artist"
+                        maxlength="150"
+                    >
+
+                    <!-- Lyrics -->
+                    <h2>Lyric Sections</h2>
+
+                    <p class="editor-hint">
+                        Define each section once.
+                        One lyric line per row; blank lines are preserved.
+                    </p>
+
+                    <div id="sections"></div>
+
+                    <button type="button" id="addSection">
+                        + Add Section
+                    </button>
+
+                    <!-- Arrangement -->
+                    <h2>Arrangement</h2>
+
+                    <p class="editor-hint">
+                        Add repeats and rearrange the section order
+                        independently of the lyrics.
+                    </p>
+
+                    <div id="arrangementList"></div>
+
+                    <button type="button" id="addOccurrence">
+                        + Add Occurrence
+                    </button>
+
+                    <!-- Actions -->
+                    <div class="editor-actions">
+
+                        <button type="button" id="previewBtn">
+                            Preview YAML
+                        </button>
+
+                        <button
+                            type="submit"
+                            id="submitBtn"
+                            class="editor-primary"
+                        >
+                            Add Song
+                        </button>
+
+                    </div>
+
+                    <!-- Preview -->
+                    <pre id="preview" hidden></pre>
+
+                    <!-- Status -->
+                    <p
+                        id="status"
+                        role="status"
+                        aria-live="polite"
+                    ></p>
+
+                </form>
+            </div>
+        </div>
+
         <div class="line"></div>
-        <div class="song-item" id="backButton" onclick="router.back()">← Back</div>
+
+        <div class="song-item" onclick="router.back()">
+            ← Back
+        </div>
+
     </main>
+
+    <!-- Footer -->
     <footer class="active">
+
         <div class="line"></div>
-        <p class="credits"><i>"...let them ever sing for joy."</i> - Psalm 5:11</p>
+
+        <p class="credits">
+            <i>"...let them ever sing for joy."</i> - Psalm 5:11
+        </p>
+
         <br>
+
         <h3>Thanks</h3>
-        <p class="credits" id="credits">
+
+        <p class="credits" id="credits"></p>
+
+        <p>
+            <a
+                href="https://docs.google.com/forms/d/1TqZYus-cnbzcF9ICdVFqH9LwDEVTybSX9xBkZ6tV19c"
+                target="_blank"
+            >
+                Join the Mailing List↗
+            </a>
         </p>
-        <p><a href="https://docs.google.com/forms/d/1TqZYus-cnbzcF9ICdVFqH9LwDEVTybSX9xBkZ6tV19c" target="_blank">
-            Join the Mailing List↗</a>
+
+        <p>
+            <a
+                href="https://open.spotify.com/playlist/7JFg3QjM4a1Z5vApDud9yT"
+                target="_blank"
+            >
+                Spotify Playlist↗
+            </a>
         </p>
-        <p><a href="https://open.spotify.com/playlist/7JFg3QjM4a1Z5vApDud9yT" target="_blank">
-            Spotify Playlist↗</a></p>
+
     </footer>
 
+    <!-- Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+
+    <!-- Application Scripts -->
     <script src="js/config.js"></script>
     <script src="js/focus.js"></script>
     <script src="js/historyManager.js"></script>
     <script src="js/print.js"></script>
-    <script src="js/song-display.js"></script>
-</body>
 
+    <!-- Editor must load before song-display.js -->
+    <script src="js/song-editor.js"></script>
+    <script src="js/song-display.js"></script>
+
+</body>
 </html>
