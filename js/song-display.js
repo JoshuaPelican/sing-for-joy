@@ -22,6 +22,10 @@ function escapeHTML(value) {
   );
 }
 
+// ----------------------------
+// SONG RENDERING
+// ----------------------------
+
 function buildSong(song) {
   let html = `
     <div class="song-header">
@@ -39,7 +43,9 @@ function buildSong(song) {
     html += `
       <div class="song-section">
         <div class="section-label">
-          ${escapeHTML(elementKey.replace(/(\D+)(\d+)/, '$1 $2'))}
+          ${escapeHTML(
+            elementKey.replace(/(\D+)(\d+)/, '$1 $2')
+          )}
         </div>
         <div class="section-lyrics">
     `;
@@ -74,16 +80,12 @@ function buildSong(song) {
   return html + '</div>';
 }
 
+// ----------------------------
+// PAGE VISIBILITY
+// ----------------------------
+
 function hideEditors() {
   document.getElementById('editorContent').hidden = true;
-  document.getElementById('listEditorContent').hidden = true;
-}
-
-function hideEditor() {
-  document.getElementById('editorContent').hidden = true;
-}
-
-function hideListEditor() {
   document.getElementById('listEditorContent').hidden = true;
 }
 
@@ -103,6 +105,10 @@ function toggleSongDisplay(isActive) {
   footer.classList.toggle('active', !isActive);
 }
 
+// ----------------------------
+// SONG LOADING
+// ----------------------------
+
 async function fetchAndCacheSong(songID) {
   let songData;
 
@@ -115,7 +121,9 @@ async function fetchAndCacheSong(songID) {
       `songs/${encodeURIComponent(songID)}.yaml`
     );
 
-    if (!response.ok) throw Error('Not found');
+    if (!response.ok) {
+      throw Error('Not found');
+    }
 
     const parsed = jsyaml.load(await response.text());
 
@@ -131,6 +139,7 @@ async function fetchAndCacheSong(songID) {
 
   } catch (error) {
     console.error(`Error loading ${songID}:`, error);
+
     songData = {
       id: songID,
       error: true
@@ -149,50 +158,70 @@ async function tryGetSong(songID) {
   return songCache.get(songID);
 }
 
+// ----------------------------
+// SONG PAGE
+// ----------------------------
+
 async function displaySong(data) {
   hideEditors();
 
   const songID = data.params.id;
+
   const song = await tryGetSong(songID);
 
-  // Avoid showing stale results after navigating away.
+  // Prevent old fetches from overwriting a newer page.
   if (
     router.currentRoute !== '/song' ||
-    new URLSearchParams(location.hash.split('?')[1] || '')
-      .get('id') !== songID
+    new URLSearchParams(
+      location.hash.split('?')[1] || ''
+    ).get('id') !== songID
   ) {
     return;
   }
 
   if (!song || song.error) {
-    setSongContent(
-      `<div class="error-msg">
-        Error displaying song: ${escapeHTML(songID)}
-      </div>`
-    );
+    setSongContent(`
+      <div class="error-msg">
+        Error displaying song:
+        ${escapeHTML(songID)}
+      </div>
+    `);
   } else {
     setSongContent(buildSong(song));
 
+    // Developer-only edit button.
     const editLink = document.createElement('a');
-    editLink.href = `#/edit?id=${encodeURIComponent(songID)}`;
-    editLink.textContent = 'Edit song';
-    editLink.className = 'song-item';
-    editLink.style.margin = '15px 0';
 
-    songContent.append(editLink);
+    editLink.href =
+      `#/edit?id=${encodeURIComponent(songID)}`;
+
+    editLink.textContent = 'Edit Song';
+
+    editLink.className = 'song-item dev-only';
+    editLink.style.margin = '15px 0';
 
     editLink.addEventListener('click', event => {
       event.preventDefault();
       navEdit(songID);
     });
+
+    songContent.append(editLink);
   }
 
   toggleSongDisplay(true);
 }
 
+// ----------------------------
+// PRINT VIEW
+// ----------------------------
+
 function displayPrint() {
   hideEditors();
-  setSongContent(hymnalPrinter.createPrintPageContent());
+
+  setSongContent(
+    hymnalPrinter.createPrintPageContent()
+  );
+
   toggleSongDisplay(true);
 
   setTimeout(() => {
@@ -206,6 +235,10 @@ function displayPrint() {
     }
   }, 0);
 }
+
+// ----------------------------
+// SONG LIST ITEMS
+// ----------------------------
 
 async function buildSongItem(songID) {
   const song = await tryGetSong(songID);
@@ -240,6 +273,10 @@ async function buildSongList(songIDs) {
   return ol;
 }
 
+// ----------------------------
+// CREDITS
+// ----------------------------
+
 function loadCredits(songList = songFiles[0]) {
   credits.replaceChildren();
 
@@ -255,6 +292,10 @@ function loadCredits(songList = songFiles[0]) {
   }
 }
 
+// ----------------------------
+// ARCHIVE BUTTON
+// ----------------------------
+
 function updateArchiveButton(isArchive) {
   archiveButton.textContent = isArchive
     ? '← Latest Songs'
@@ -265,13 +306,19 @@ function updateArchiveButton(isArchive) {
     : navArchive;
 }
 
+// ----------------------------
+// HOME PAGE
+// ----------------------------
+
 async function displayHome() {
   hideEditors();
+
   tocSongList.replaceChildren();
   toggleSongDisplay(false);
   updateArchiveButton(false);
 
   const list = songFiles?.[0];
+
   loadCredits(list);
 
   if (!list) return;
@@ -291,8 +338,13 @@ async function displayHome() {
   }
 }
 
+// ----------------------------
+// ARCHIVE PAGE
+// ----------------------------
+
 async function displayArchive() {
   hideEditors();
+
   tocSongList.replaceChildren();
   toggleSongDisplay(false);
   updateArchiveButton(true);
@@ -349,7 +401,9 @@ async function displayArchive() {
       date.textContent = last_sung;
 
       const tally = document.createElement('p');
-      tally.textContent = count > 1 ? `+${count - 1}` : '   ';
+      tally.textContent = count > 1
+        ? `+${count - 1}`
+        : '   ';
 
       detail.append(date, tally);
       li.append(title, detail);
@@ -365,9 +419,14 @@ async function displayArchive() {
   }
 }
 
+// ----------------------------
+// SONG EDITOR VIEW
+// ----------------------------
+
 function displayEditor(data) {
-  hideListEditor();
+  hideEditors();
   setSongContent('');
+
   toggleSongDisplay(true);
 
   document.getElementById('editorContent').hidden = false;
@@ -375,9 +434,14 @@ function displayEditor(data) {
   SongEditor.open(data.params.id || null);
 }
 
+// ----------------------------
+// SONG LIST EDITOR VIEW
+// ----------------------------
+
 function displayListEditor(data) {
-  hideEditor();
+  hideEditors();
   setSongContent('');
+
   toggleSongDisplay(true);
 
   document.getElementById('listEditorContent').hidden = false;
@@ -388,6 +452,10 @@ function displayListEditor(data) {
 
   SongListEditor.open(index);
 }
+
+// ----------------------------
+// ROUTER
+// ----------------------------
 
 const router = new HistoryManager();
 
@@ -401,6 +469,10 @@ router
   .register('*', displayHome)
   .init();
 
+// ----------------------------
+// NAVIGATION HELPERS
+// ----------------------------
+
 function navHome() {
   router.navigate('/');
 }
@@ -410,7 +482,9 @@ function navArchive() {
 }
 
 function navSong(id) {
-  router.navigate(`/song?id=${encodeURIComponent(id)}`);
+  router.navigate(
+    `/song?id=${encodeURIComponent(id)}`
+  );
 }
 
 function navPrint() {
@@ -419,12 +493,16 @@ function navPrint() {
 
 function navEdit(id = null) {
   router.navigate(
-    id ? `/edit?id=${encodeURIComponent(id)}` : '/edit'
+    id
+      ? `/edit?id=${encodeURIComponent(id)}`
+      : '/edit'
   );
 }
 
 function navList(index = null) {
   router.navigate(
-    index === null ? '/list' : `/list?index=${index}`
+    index === null
+      ? '/list'
+      : `/list?index=${index}`
   );
 }
