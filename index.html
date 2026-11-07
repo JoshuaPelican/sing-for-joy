@@ -35,12 +35,11 @@
         <div class="song-item" id="archiveButton">
             Song Archive
         </div>
-
+        <br>
         <div class="song-item" onclick="router.navigate('/edit')">
             + Add Song
         </div>
     </nav>
-
     <!-- Main SPA Content -->
     <main id="song">
 
@@ -68,7 +67,7 @@
 
                     <!-- GitHub Authentication -->
                     <label for="token">
-                        GitHub Personal Access Token
+                        Password
                     </label>
 
                     <input
@@ -77,12 +76,8 @@
                         required
                         autocomplete="off"
                         spellcheck="false"
-                        placeholder="Fine-grained token with Contents: write"
+                        placeholder="github_pat_..."
                     >
-
-                    <p class="editor-hint">
-                        Used for this submission only; not saved locally.
-                    </p>
 
                     <!-- Song Metadata -->
                     <label for="name">Song Name</label>
