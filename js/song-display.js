@@ -195,6 +195,12 @@ function navPrint() {
 	router.navigate("/print");
 }
 
+function navEdit(songID = null) {
+  router.navigate(
+    songID ? `/edit?id=${encodeURIComponent(songID)}` : "/edit"
+  );
+}
+
 async function displayHome() {
 	tocSongList.innerHTML = "";
 	toggleSongDisplay(false);
@@ -217,6 +223,17 @@ async function displayHome() {
 	// create song list
 	const list = await buildSongList(songList.songs);
 	tocSongList.appendChild(list);
+}
+
+function displayEditor(data) {
+    const songID = data.params.id || null;
+
+    setSongContent("");
+    toggleSongDisplay(true);
+
+    document.getElementById("editorContent").hidden = false;
+
+    SongEditor.open(songID);
 }
 
 /*
