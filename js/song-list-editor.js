@@ -96,17 +96,16 @@
 
             const catalog = await response.json();
 
-            if (
-                !Array.isArray(catalog) ||
-                !catalog.every(id =>
-                    typeof id === 'string' &&
-                    songIDPattern.test(id)
-                )
-            ) {
-                throw Error('Invalid song catalog.');
+            if (!Array.isArray(catalog)) {
+                throw Error('Invalid song catalog');
             }
 
-            for (const id of catalog) {
+            const validSongs = catalog.filter(id =>
+                typeof id === 'string' &&
+                songIDPattern.test(id)
+            );
+
+            for (const id of validSongs) {
                 if (!songIDs.includes(id)) {
                     songIDs.push(id);
                 }

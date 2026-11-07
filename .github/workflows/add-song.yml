@@ -176,12 +176,11 @@ jobs:
           folder = Path('songs')
           folder.mkdir(exist_ok=True)
 
-          song_ids = sorted({
+          song_ids = sorted(
               path.stem
-              for path in folder.iterdir()
-              if path.is_file()
-              and path.suffix.lower() in ('.yaml', '.yml')
-          })
+              for path in Path("songs").glob("*.yaml")
+              if not path.stem.startswith("_")
+          )
 
           catalog = folder / 'index.json'
 
