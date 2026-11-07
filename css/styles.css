@@ -405,7 +405,7 @@ body:not(.dev-mode) .dev-navigation {
     align-items: center;
 
     width: 100%;
-    margin: 20px 0;
+    margin: 5px 0;
 }
 
 .song-edit-actions > .song-item {
