@@ -225,7 +225,7 @@ async function displaySong(data) {
   } else {
     setSongContent(buildSong(song));
 
-    const editLink = document.createElement('a');
+    const editLink = document.createElement('div');
     editLink.href = `#/edit?id=${encodeURIComponent(songID)}`;
     editLink.textContent = 'Edit Song';
     editLink.className = 'song-item dev-only';
