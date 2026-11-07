@@ -1,345 +1,430 @@
+
 const songCache = new Map();
 
-const songPage = document.getElementById("song");
-const songContent = document.getElementById("songContent");
-const tocPage = document.getElementById("toc");
-const tocSongList = document.getElementById("songList");
-const archiveButton = document.getElementById("archiveButton");
-const credits = document.getElementById("credits");
-const footer = document.querySelector("footer");
+const songPage = document.getElementById('song');
+const songContent = document.getElementById('songContent');
+const tocPage = document.getElementById('toc');
+const tocSongList = document.getElementById('songList');
+const archiveButton = document.getElementById('archiveButton');
+const credits = document.getElementById('credits');
+const footer = document.querySelector('footer');
 
-function buildSong(song) {
-	let html = `
-        <div class="song-header">
-            <h1 class="song-title">${song.name}</h1>
-            <div class="line"></div>
-        </div>
-        <div class="lyrics-container">
-    `;
-
-	song.arrangement.forEach((elementKey) => {
-		const lyrics = song.elements[elementKey];
-		if (!lyrics) return;
-
-		html += `
-            <div class="song-section">
-                <div class="section-label">${elementKey.replace(/(\D+)(\d+)/, "$1 $2")}</div>
-                <div class="section-lyrics">
-                    ${lyrics
-						.map((lyric, i) => {
-							if (!lyric)
-								return `<div style="margin: 0.75em 0;"></div>`;
-							return `<div>${lyric}</div>`;
-						})
-						.join("")}
-                </div>
-            </div>
-        `;
-	});
-
-	html += `
-    </div>
-    <div class="song-footer">
-        <div class="line"></div>
-        <p class="song-author"><b>Author${song.author.split(",").length > 1 ? "s" : ""}</b> - ${song.author}</p>
-        ${song.artist ? `<p class="song-author"><b>Artist</b> - ${song.artist}</p>` : ""}
-    </div>`;
-	return html;
-}
-
-async function displaySong(songData) {
-	hideEditor();
-	const song = await tryGetSong(songData.params.id);
-
-	if (!song || song.error) {
-		setSongContent(
-			`<div class="error-msg">Error displaying song: ${songData.params.id}</div>`,
-		);
-	} else {
-		const html = buildSong(song);
-		setSongContent(html);
-		const editLink = document.createElement('a');
-		editLink.href = `add-song.html?edit=${encodeURIComponent(songData.params.id)}`;
-		editLink.textContent = 'Edit song';
-		editLink.className = 'song-item';
-		editLink.style.margin = '15px 0';
-		songContent.appendChild(editLink);
-	}
-	toggleSongDisplay(true);
-}
-
-function displayPrint() {
-	hideEditor();
-	const html = hymnalPrinter.createPrintPageContent();
-	setSongContent(html);
-	toggleSongDisplay(true);
-
-	// Attach event listener after content is added to DOM
-	setTimeout(() => {
-		const generateBtn = document.getElementById("generatePdfBtn");
-		if (generateBtn) {
-			generateBtn.addEventListener("click", () =>
-				hymnalPrinter.handleGeneratePDF(),
-			);
-		}
-	}, 0);
-}
-
-function setSongContent(htmlContent) {
-	songContent.innerHTML = htmlContent;
-}
-
-async function tryGetSong(songID) {
-	if (!songCache.has(songID)) await fetchAndCacheSong(songID);
-
-	return songCache.get(songID);
-}
-
-function toggleSongDisplay(isActive) {
-	window.scrollTo({
-		top: 0,
-		left: 0,
-		behavior: "smooth",
-	});
-	if (isActive) {
-		tocPage.classList.remove("active");
-		songPage.classList.add("active");
-		footer.classList.remove("active");
-	} else {
-		songPage.classList.remove("active");
-		tocPage.classList.add("active");
-		footer.classList.add("active");
-	}
-}
-
-async function buildSongList(songIDs) {
-	await Promise.all(songIDs.map(async (id) => await tryGetSong(id)));
-
-	const ol = document.createElement("ol");
-	ol.classList.add("song-list");
-
-	const items = await Promise.all(
-		songIDs.map((songID) => buildSongItem(songID)),
-	);
-	items.forEach((item) => ol.appendChild(item));
-	return ol;
-}
-
-async function buildSongItem(songID) {
-	const song = await tryGetSong(songID);
-	const li = document.createElement("li");
-
-	if (song.error) {
-		li.className = "song-item error";
-		li.textContent = `${songID} (NOT FOUND)`;
-	} else {
-		li.className = "song-item";
-		li.textContent = song.name;
-		li.onclick = () => navSong(songID);
-	}
-	return li;
-}
-
-async function fetchAndCacheSong(songID) {
-	if (songCache.has(songID) && !songCache.get(songID).error) {
-		return songCache.get(songID);
-	}
-
-	let songData;
-	try {
-		const response = await fetch(`songs/${songID}.yaml`);
-		if (!response.ok) throw new Error("Not found");
-
-		const text = await response.text();
-		const parsed = jsyaml.load(text);
-		const song = {
-			id: songID,
-			name: parsed.name,
-			author: parsed.author,
-			artist: parsed.artist,
-			arrangement: parsed.arrangement,
-			elements: parsed.elements,
-			error: false,
-		};
-
-		songData = song;
-	} catch (error) {
-		console.error(`Error loading ${songID}:`, error);
-		songData = { id: songID, error: true };
-	}
-
-	songCache.set(songID, songData);
-}
-
-const router = new HistoryManager();
-router
-	.register("/", displayHome)
-	.register("/archive", displayArchive)
-	.register("/song", (data) => displaySong(data))
-	.register("/edit", displayEditor)
-	.register("/print", displayPrint)
-	.register("*", displayHome)
-	.init();
-
-function navHome() {
-	router.navigate("/");
-}
-
-function navArchive() {
-	router.navigate("/archive");
-}
-
-function navSong(songID) {
-	router.navigate(`/song?id=${songID}`);
-}
-
-function navPrint() {
-	router.navigate("/print");
-}
-
-function navEdit(songID = null) {
-  router.navigate(
-    songID ? `/edit?id=${encodeURIComponent(songID)}` : "/edit"
+function escapeHTML(value) {
+  return String(value ?? '').replace(
+    /[&<>"']/g,
+    c => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    }[c])
   );
 }
 
-async function displayHome() {
-	hideEditor();
-	tocSongList.innerHTML = "";
-	toggleSongDisplay(false);
-	updateArchiveButton(false);
+function buildSong(song) {
+  let html = `
+    <div class="song-header">
+      <h1 class="song-title">${escapeHTML(song.name)}</h1>
+      <div class="line"></div>
+    </div>
+    <div class="lyrics-container">
+  `;
 
-	if (songFiles == null) {
-		return;
-	}
+  for (const elementKey of song.arrangement) {
+    const lyrics = song.elements[elementKey];
 
-	const songList = songFiles[0];
+    if (!lyrics) continue;
 
-	// create date header
-	const header = document.createElement("p");
-	header.classList.add("credits");
-	header.style.marginTop = "10px";
-	header.style.fontWeight = "bold";
-	header.innerText = songList.date;
-	tocSongList.appendChild(header);
+    html += `
+      <div class="song-section">
+        <div class="section-label">
+          ${escapeHTML(elementKey.replace(/(\D+)(\d+)/, '$1 $2'))}
+        </div>
+        <div class="section-lyrics">
+    `;
 
-	// create song list
-	const list = await buildSongList(songList.songs);
-	tocSongList.appendChild(list);
+    html += lyrics.map(line =>
+      line
+        ? `<div>${escapeHTML(line)}</div>`
+        : '<div style="margin: 0.75em 0;"></div>'
+    ).join('');
+
+    html += '</div></div>';
+  }
+
+  html += `
+    </div>
+    <div class="song-footer">
+      <div class="line"></div>
+      <p class="song-author">
+        <b>Author${song.author.split(',').length > 1 ? 's' : ''}</b>
+        - ${escapeHTML(song.author)}
+      </p>
+  `;
+
+  if (song.artist) {
+    html += `
+      <p class="song-author">
+        <b>Artist</b> - ${escapeHTML(song.artist)}
+      </p>
+    `;
+  }
+
+  return html + '</div>';
 }
 
-function displayEditor(data) {
-    const songID = data.params.id || null;
-
-    setSongContent("");
-    toggleSongDisplay(true);
-
-    document.getElementById("editorContent").hidden = false;
-
-    SongEditor.open(songID);
+function hideEditors() {
+  document.getElementById('editorContent').hidden = true;
+  document.getElementById('listEditorContent').hidden = true;
 }
 
 function hideEditor() {
-    document.getElementById("editorContent").hidden = true;
+  document.getElementById('editorContent').hidden = true;
 }
 
-/*
-async function displayArchive() {
-    tocSongList.innerHTML = '';
-    toggleSongDisplay(false);
-    updateArchiveButton(true);
-
-    if(songFiles == null)
-    {
-        return;
-    }
-
-    for (const songList of songFiles){
-        // create date header
-        const header = document.createElement("p");
-        header.classList.add("credits")
-        header.style.marginTop = "10px";
-        header.style.fontWeight = "bold";
-        header.innerText = songList.date;
-        tocSongList.appendChild(header);
-
-        // create song list
-        const list = await buildSongList(songList.songs);
-        tocSongList.appendChild(list);
-    }
+function hideListEditor() {
+  document.getElementById('listEditorContent').hidden = true;
 }
-*/
 
-async function displayArchive() {
-	hideEditor();
-	tocSongList.innerHTML = "";
-	toggleSongDisplay(false);
-	updateArchiveButton(true);
+function setSongContent(htmlContent) {
+  songContent.innerHTML = htmlContent;
+}
 
-	if (songFiles == null) return;
+function toggleSongDisplay(isActive) {
+  window.scrollTo({
+    top: 0,
+    left: 0,
+    behavior: 'smooth'
+  });
 
-	// Build a map of songID -> most recent date
-	const songDateMap = new Map();
-	for (const songList of songFiles) {
-		for (const songID of songList.songs) {
-			if (!songDateMap.has(songID)) {
-				songDateMap.set(songID, { last_sung: songList.date, count: 1 });
-			} else {
-				songDateMap.get(songID).count++;
-			}
-		}
-	}
+  tocPage.classList.toggle('active', !isActive);
+  songPage.classList.toggle('active', isActive);
+  footer.classList.toggle('active', !isActive);
+}
 
-	// Fetch all unique songs
-	const allSongIDs = [...songDateMap.keys()];
-	await Promise.all(allSongIDs.map((id) => tryGetSong(id)));
+async function fetchAndCacheSong(songID) {
+  let songData;
 
-	// Sort alphabetically by song name
-	allSongIDs.sort((a, b) => {
-		const nameA = songCache.get(a)?.name ?? a;
-		const nameB = songCache.get(b)?.name ?? b;
-		return nameA.localeCompare(nameB);
-	});
+  try {
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(songID)) {
+      throw Error('Invalid song ID');
+    }
 
-	// Build list
-	const ol = document.createElement("ol");
-	ol.classList.add("song-list");
+    const response = await fetch(
+      `songs/${encodeURIComponent(songID)}.yaml`
+    );
 
-	for (const songID of allSongIDs) {
-		const song = await tryGetSong(songID);
-		const li = document.createElement("li");
-		const date = songDateMap.get(songID).last_sung;
-		const count = songDateMap.get(songID).count;
+    if (!response.ok) throw Error('Not found');
 
-		if (song.error) {
-			li.className = "song-item error";
-			li.textContent = `${songID} (NOT FOUND)`;
-		} else {
-			li.className = "song-item";
-			li.innerHTML = `${song.name} <div><i class="song-date">${date}</i><p>${count > 1 ? "+" + (count - 1) : "&nbsp&nbsp&nbsp&nbsp"}</p></div>`;
-			li.onclick = () => navSong(songID);
-		}
-		ol.appendChild(li);
-	}
+    const parsed = jsyaml.load(await response.text());
 
-	tocSongList.appendChild(ol);
+    songData = {
+      id: songID,
+      name: parsed.name,
+      author: parsed.author,
+      artist: parsed.artist,
+      arrangement: parsed.arrangement,
+      elements: parsed.elements,
+      error: false
+    };
+
+  } catch (error) {
+    console.error(`Error loading ${songID}:`, error);
+    songData = {
+      id: songID,
+      error: true
+    };
+  }
+
+  songCache.set(songID, songData);
+  return songData;
+}
+
+async function tryGetSong(songID) {
+  if (!songCache.has(songID)) {
+    return fetchAndCacheSong(songID);
+  }
+
+  return songCache.get(songID);
+}
+
+async function displaySong(data) {
+  hideEditors();
+
+  const songID = data.params.id;
+  const song = await tryGetSong(songID);
+
+  // Avoid showing stale results after navigating away.
+  if (
+    router.currentRoute !== '/song' ||
+    new URLSearchParams(location.hash.split('?')[1] || '')
+      .get('id') !== songID
+  ) {
+    return;
+  }
+
+  if (!song || song.error) {
+    setSongContent(
+      `<div class="error-msg">
+        Error displaying song: ${escapeHTML(songID)}
+      </div>`
+    );
+  } else {
+    setSongContent(buildSong(song));
+
+    const editLink = document.createElement('a');
+    editLink.href = `#/edit?id=${encodeURIComponent(songID)}`;
+    editLink.textContent = 'Edit song';
+    editLink.className = 'song-item';
+    editLink.style.margin = '15px 0';
+
+    songContent.append(editLink);
+
+    editLink.addEventListener('click', event => {
+      event.preventDefault();
+      navEdit(songID);
+    });
+  }
+
+  toggleSongDisplay(true);
+}
+
+function displayPrint() {
+  hideEditors();
+  setSongContent(hymnalPrinter.createPrintPageContent());
+  toggleSongDisplay(true);
+
+  setTimeout(() => {
+    const button = document.getElementById('generatePdfBtn');
+
+    if (button) {
+      button.addEventListener(
+        'click',
+        () => hymnalPrinter.handleGeneratePDF()
+      );
+    }
+  }, 0);
+}
+
+async function buildSongItem(songID) {
+  const song = await tryGetSong(songID);
+  const li = document.createElement('li');
+
+  if (song.error) {
+    li.className = 'song-item error';
+    li.textContent = `${songID} (NOT FOUND)`;
+  } else {
+    li.className = 'song-item';
+    li.textContent = song.name;
+    li.onclick = () => navSong(songID);
+  }
+
+  return li;
+}
+
+async function buildSongList(songIDs) {
+  await Promise.all(
+    songIDs.map(id => tryGetSong(id))
+  );
+
+  const ol = document.createElement('ol');
+  ol.className = 'song-list';
+
+  const items = await Promise.all(
+    songIDs.map(id => buildSongItem(id))
+  );
+
+  items.forEach(li => ol.append(li));
+
+  return ol;
+}
+
+function loadCredits(songList = songFiles[0]) {
+  credits.replaceChildren();
+
+  for (const credit of (songList?.credits ?? [])) {
+    const name = document.createElement('b');
+    name.textContent = credit.name;
+
+    credits.append(
+      name,
+      document.createTextNode(` - ${credit.role}`),
+      document.createElement('br')
+    );
+  }
 }
 
 function updateArchiveButton(isArchive) {
-	if (isArchive) {
-		archiveButton.textContent = "← Latest Songs";
-		archiveButton.onclick = navHome;
-	} else {
-		archiveButton.textContent = "Song Archive →";
-		archiveButton.onclick = navArchive;
-	}
+  archiveButton.textContent = isArchive
+    ? '← Latest Songs'
+    : 'Song Archive →';
+
+  archiveButton.onclick = isArchive
+    ? navHome
+    : navArchive;
 }
 
-function loadCredits() {
-	creditList.forEach((credit) => {
-		credits.innerHTML += `<b>${credit.name}</b> - ${credit.role}<br>`;
-	});
+async function displayHome() {
+  hideEditors();
+  tocSongList.replaceChildren();
+  toggleSongDisplay(false);
+  updateArchiveButton(false);
+
+  const list = songFiles?.[0];
+  loadCredits(list);
+
+  if (!list) return;
+
+  const header = document.createElement('p');
+  header.className = 'credits';
+  header.style.marginTop = '10px';
+  header.style.fontWeight = 'bold';
+  header.textContent = list.date;
+
+  tocSongList.append(header);
+
+  const built = await buildSongList(list.songs);
+
+  if (router.currentRoute === '/') {
+    tocSongList.append(built);
+  }
 }
 
-const backButton = document.getElementById("backButton");
-loadCredits();
+async function displayArchive() {
+  hideEditors();
+  tocSongList.replaceChildren();
+  toggleSongDisplay(false);
+  updateArchiveButton(true);
+
+  if (!songFiles) return;
+
+  const songDateMap = new Map();
+
+  for (const list of songFiles) {
+    for (const id of list.songs) {
+      if (!songDateMap.has(id)) {
+        songDateMap.set(id, {
+          last_sung: list.date,
+          count: 1
+        });
+      } else {
+        songDateMap.get(id).count++;
+      }
+    }
+  }
+
+  const allSongIDs = [...songDateMap.keys()];
+
+  await Promise.all(
+    allSongIDs.map(id => tryGetSong(id))
+  );
+
+  allSongIDs.sort((a, b) =>
+    (songCache.get(a)?.name ?? a).localeCompare(
+      songCache.get(b)?.name ?? b
+    )
+  );
+
+  const ol = document.createElement('ol');
+  ol.className = 'song-list';
+
+  for (const id of allSongIDs) {
+    const song = await tryGetSong(id);
+    const { last_sung, count } = songDateMap.get(id);
+
+    const li = document.createElement('li');
+
+    if (song.error) {
+      li.className = 'song-item error';
+      li.textContent = `${id} (NOT FOUND)`;
+    } else {
+      li.className = 'song-item';
+
+      const title = document.createTextNode(song.name + ' ');
+      const detail = document.createElement('div');
+
+      const date = document.createElement('i');
+      date.className = 'song-date';
+      date.textContent = last_sung;
+
+      const tally = document.createElement('p');
+      tally.textContent = count > 1 ? `+${count - 1}` : '   ';
+
+      detail.append(date, tally);
+      li.append(title, detail);
+
+      li.onclick = () => navSong(id);
+    }
+
+    ol.append(li);
+  }
+
+  if (router.currentRoute === '/archive') {
+    tocSongList.append(ol);
+  }
+}
+
+function displayEditor(data) {
+  hideListEditor();
+  setSongContent('');
+  toggleSongDisplay(true);
+
+  document.getElementById('editorContent').hidden = false;
+
+  SongEditor.open(data.params.id || null);
+}
+
+function displayListEditor(data) {
+  hideEditor();
+  setSongContent('');
+  toggleSongDisplay(true);
+
+  document.getElementById('listEditorContent').hidden = false;
+
+  const index = data.params.index === undefined
+    ? null
+    : Number(data.params.index);
+
+  SongListEditor.open(index);
+}
+
+const router = new HistoryManager();
+
+router
+  .register('/', displayHome)
+  .register('/archive', displayArchive)
+  .register('/song', displaySong)
+  .register('/edit', displayEditor)
+  .register('/list', displayListEditor)
+  .register('/print', displayPrint)
+  .register('*', displayHome)
+  .init();
+
+function navHome() {
+  router.navigate('/');
+}
+
+function navArchive() {
+  router.navigate('/archive');
+}
+
+function navSong(id) {
+  router.navigate(`/song?id=${encodeURIComponent(id)}`);
+}
+
+function navPrint() {
+  router.navigate('/print');
+}
+
+function navEdit(id = null) {
+  router.navigate(
+    id ? `/edit?id=${encodeURIComponent(id)}` : '/edit'
+  );
+}
+
+function navList(index = null) {
+  router.navigate(
+    index === null ? '/list' : `/list?index=${index}`
+  );
+}

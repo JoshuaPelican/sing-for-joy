@@ -1,0 +1,87 @@
+
+#listEditorContent[hidden] {
+  display: none !important;
+}
+
+#listEditorContent {
+  width: 100%;
+  max-width: 600px;
+  color: var(--font-body);
+}
+
+#listEditorContent form {
+  width: 100%;
+}
+
+#listEditorContent h2 {
+  margin: 20px 0 8px;
+}
+
+#listEditorContent label {
+  display: block;
+  margin: 12px 0 4px;
+  color: var(--font-sub);
+}
+
+#listEditorContent input,
+#listEditorContent select {
+  background: var(--background-accent);
+  color: var(--font-body);
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  padding: 9px;
+  font: inherit;
+  min-width: 0;
+}
+
+#listDate,
+#listToken {
+  width: 100%;
+}
+
+.list-editor-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin: 7px 0;
+  align-items: center;
+}
+
+.list-editor-row select {
+  flex: 1 1 160px;
+}
+
+.list-editor-row input {
+  flex: 1 1 125px;
+}
+
+#listEditorContent button {
+  border: 0;
+  border-radius: 4px;
+  padding: 9px 11px;
+  background: var(--highlight);
+  color: var(--font-body);
+  cursor: pointer;
+}
+
+#listEditorContent button:hover {
+  background: var(--accent);
+}
+
+#listEditorContent button:disabled {
+  opacity: .4;
+  cursor: default;
+}
+
+#listStatus {
+  overflow-wrap: anywhere;
+  margin-top: 15px;
+}
+
+#listStatus.error {
+  color: var(--error);
+}
+
+#listStatus.success {
+  color: var(--success);
+}

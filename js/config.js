@@ -1,123 +1,130 @@
-const songFiles = [
-	{
-		date: "9-18-2026",
-		songs: [
-			"praise-upon-praise",
-			"you-know-what-i-need",
-			"though-you-slay-me"
-		]
-	},
-	{
-		date: "8-15-2026",
-		songs: [
-			"come-to-jesus",
-			"goodness-of-god",
-			"here-on-christ-the-rock",
-			"yet-not-i",
-			"praise-the-lord-forever",
-		],
-	},
-	{
-		date: "5-23-2026",
-		songs: [
-			"goodness-of-god",
-			"before-the-throne",
-			"oh-lord-my-rock-and-my-redeemer",
-			"all-sufficient-merit",
-		],
-	},
-	{
-		date: "3-20-2026",
-		songs: [
-			"joy-has-dawned-upon-the-world",
-			"o-the-deep-deep-love-of-jesus",
-			"how-sweet-the-name-of-jesus-sounds",
-			"the-wonderful-cross",
-			"hosanna-hosanna",
-			"i-serve-a-risen-savior",
-			"nothing-but-the-blood",
-			"those-who-look-to-him",
-			"i-surrender-all",
-			"if-christ-is-mine",
-			"death-was-arrested",
-		],
-	},
-	{
-		date: "2-28-2026",
-		songs: [
-			"i-know-whom-i-have-believed",
-			"oh-christ-the-rock",
-			"all-i-have-is-christ",
-			"christ-is-mine-forevermore",
-			"christ-our-wisdom",
-			"come-to-jesus",
-			"i-serve-a-risen-savior",
-			"jesus-keep-me-near-the-cross",
-			"all-sufficient-merit",
-		],
-	},
-	{
-		date: "12-13-2025",
-		songs: [
-			"goodness-of-god",
-			"the-son-of-god-came-down",
-			"joy-to-the-world",
-			"all-sufficient-merit",
-			"hosanna-hosanna",
-			"god-of-every-grace",
-			"joy-has-dawned-upon-the-world",
-			"your-great-name",
-			"never-cease-to-praise",
-			"i-know-whom-i-have-believed",
-			"angels-we-have-heard-on-high",
-		],
-	},
-	{
-		date: "10-24-2025",
-		songs: [
-			"if-christ-is-mine",
-			"nothing-but-the-blood",
-			"death-was-arrested",
-			"his-mercy-is-more",
-			"all-sufficient-merit",
-			"further-along",
-			"how-sweet-the-name-of-jesus-sounds",
-			"here-on-christ-the-rock",
-			"oh-lord-my-rock-and-my-redeemer",
-			"yet-not-i",
-			"complete-in-thee",
-		],
-	},
-	{
-		date: "9-19-2025",
-		songs: [
-			"yet-not-i",
-			"his-glory-and-my-good",
-			"promises",
-			"from-the-inside-out",
-			"oh-lord-my-rock-and-my-redeemer",
-			"hosanna",
-			"holy-holy-holy",
-			"goodness-of-god",
-			"before-the-throne",
-			"never-cease-to-praise",
-			"those-who-look-to-him",
-			"all-sufficient-merit",
-		],
-	},
-];
 
-const creditList = [
-	{
-		name: "Jennifer Ou",
-		role: "Organization",
-	},
-	{
-		name: "Lily Craighead & Iris Fan",
-		role: "Location",
-	},
-	{
-		name: "Joshua Pelkington",
-		role: "Lyrics",
-	},
+const songFiles = [
+  {
+    "date": "9-18-2026",
+    "songs": [
+      "praise-upon-praise",
+      "you-know-what-i-need",
+      "though-you-slay-me"
+    ],
+    "credits": [
+      {
+        "name": "Jennifer Ou",
+        "role": "Organization"
+      },
+      {
+        "name": "Lily Craighead & Iris Fan",
+        "role": "Location"
+      },
+      {
+        "name": "Joshua Pelkington",
+        "role": "Lyrics"
+      }
+    ]
+  },
+  {
+    "date": "8-15-2026",
+    "songs": [
+      "come-to-jesus",
+      "goodness-of-god",
+      "here-on-christ-the-rock",
+      "yet-not-i",
+      "praise-the-lord-forever"
+    ],
+    "credits": []
+  },
+  {
+    "date": "5-23-2026",
+    "songs": [
+      "goodness-of-god",
+      "before-the-throne",
+      "oh-lord-my-rock-and-my-redeemer",
+      "all-sufficient-merit"
+    ],
+    "credits": []
+  },
+  {
+    "date": "3-20-2026",
+    "songs": [
+      "joy-has-dawned-upon-the-world",
+      "o-the-deep-deep-love-of-jesus",
+      "how-sweet-the-name-of-jesus-sounds",
+      "the-wonderful-cross",
+      "hosanna-hosanna",
+      "i-serve-a-risen-savior",
+      "nothing-but-the-blood",
+      "those-who-look-to-him",
+      "i-surrender-all",
+      "if-christ-is-mine",
+      "death-was-arrested"
+    ],
+    "credits": []
+  },
+  {
+    "date": "2-28-2026",
+    "songs": [
+      "i-know-whom-i-have-believed",
+      "oh-christ-the-rock",
+      "all-i-have-is-christ",
+      "christ-is-mine-forevermore",
+      "christ-our-wisdom",
+      "come-to-jesus",
+      "i-serve-a-risen-savior",
+      "jesus-keep-me-near-the-cross",
+      "all-sufficient-merit"
+    ],
+    "credits": []
+  },
+  {
+    "date": "12-13-2025",
+    "songs": [
+      "goodness-of-god",
+      "the-son-of-god-came-down",
+      "joy-to-the-world",
+      "all-sufficient-merit",
+      "hosanna-hosanna",
+      "god-of-every-grace",
+      "joy-has-dawned-upon-the-world",
+      "your-great-name",
+      "never-cease-to-praise",
+      "i-know-whom-i-have-believed",
+      "angels-we-have-heard-on-high"
+    ],
+    "credits": []
+  },
+  {
+    "date": "10-24-2025",
+    "songs": [
+      "if-christ-is-mine",
+      "nothing-but-the-blood",
+      "death-was-arrested",
+      "his-mercy-is-more",
+      "all-sufficient-merit",
+      "further-along",
+      "how-sweet-the-name-of-jesus-sounds",
+      "here-on-christ-the-rock",
+      "oh-lord-my-rock-and-my-redeemer",
+      "yet-not-i",
+      "complete-in-thee"
+    ],
+    "credits": []
+  },
+  {
+    "date": "9-19-2025",
+    "songs": [
+      "yet-not-i",
+      "his-glory-and-my-good",
+      "promises",
+      "from-the-inside-out",
+      "oh-lord-my-rock-and-my-redeemer",
+      "hosanna",
+      "holy-holy-holy",
+      "goodness-of-god",
+      "before-the-throne",
+      "never-cease-to-praise",
+      "those-who-look-to-him",
+      "all-sufficient-merit"
+    ],
+    "credits": []
+  }
 ];
