@@ -55,17 +55,20 @@
     </button>
 
     <div class="dev-navigation dev-only">
-      <a class="song-item" href="#/edit">
-        + Add Song
-      </a>
+        <button type="button" class="song-item"
+                onclick="router.navigate('/edit')">
+            + Add Song
+        </button>
 
-      <a class="song-item" href="#/list">
-        + New Song List
-      </a>
+        <button type="button" class="song-item"
+                onclick="router.navigate('/list')">
+            + New Song List
+        </button>
 
-      <a class="song-item" href="#/list?index=0">
-        Edit Latest List
-      </a>
+        <button type="button" class="song-item"
+                onclick="router.navigate('/list?index=0')">
+            Edit Latest List
+        </button>
     </div>
   </nav>
 

@@ -1,21 +1,23 @@
 
-/* ================================
+/* ==========================================
    THEME
-================================ */
+========================================== */
 
 :root {
     --font-head: #e8e8e8;
     --font-sub: #bca78d;
     --font-body: #d4d4d4;
+
     --background: #1a1816;
     --background-accent: #24211f;
     --accent: #a97e47;
     --highlight: #4b3d29;
+
     --error: #ff6b6b;
     --success: #54d260;
 
     --radius: 5px;
-    --gap: 8px;
+    --gap: 10px;
     --control-height: 40px;
 }
 
@@ -33,9 +35,9 @@
     }
 }
 
-/* ================================
-   BASE
-================================ */
+/* ==========================================
+   RESET AND BASE
+========================================== */
 
 * {
     box-sizing: border-box;
@@ -47,15 +49,19 @@ body {
     max-width: 600px;
     margin: 0 auto;
     padding: 20px;
+
     display: flex;
     flex-direction: column;
     align-items: center;
+
     background: var(--background);
     color: var(--font-body);
+
     font: 1rem/1.6 system-ui, sans-serif;
 }
 
-h1, h2 {
+h1,
+h2 {
     color: var(--font-head);
 }
 
@@ -63,20 +69,27 @@ h2 {
     margin-bottom: var(--gap);
 }
 
-h3, .credits, .form-hint {
+h3,
+.credits,
+.form-hint,
+.editor-hint {
     color: var(--font-sub);
 }
 
 a {
     color: var(--accent);
     text-decoration: none;
+    cursor: pointer;
 }
 
 a:hover {
     text-decoration: underline;
 }
 
-button, input, select, textarea {
+button,
+input,
+select,
+textarea {
     font: inherit;
 }
 
@@ -85,7 +98,7 @@ button {
 }
 
 button:disabled {
-    opacity: .45;
+    opacity: 0.45;
     cursor: not-allowed;
 }
 
@@ -108,16 +121,20 @@ button:disabled {
     text-align: center;
 }
 
-/* ================================
-   ROUTED VIEWS
-================================ */
+/* ==========================================
+   APPLICATION VIEWS
+========================================== */
 
-#toc, #song, footer {
+#toc,
+#song,
+footer {
     display: none;
     width: 100%;
 }
 
-#toc.active, #song.active, footer.active {
+#toc.active,
+#song.active,
+footer.active {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -128,21 +145,26 @@ button:disabled {
     min-width: 0;
 }
 
-/* ================================
+/* ==========================================
    NAVIGATION AND SONG LIST
-================================ */
+========================================== */
 
 .song-item {
     display: block;
-    padding: 6px 8px;
+
+    padding: 8px 12px;
+
     background: var(--background-accent);
     color: var(--font-body);
-    border: 0;
+
+    border: none;
     border-radius: var(--radius);
+
     cursor: pointer;
-    text-align: inherit;
+    text-align: center;
     text-decoration: none;
-    transition: background .15s;
+
+    transition: background-color 0.15s;
 }
 
 .song-item:hover {
@@ -156,39 +178,139 @@ button:disabled {
     cursor: default;
 }
 
+/* Main song list */
+
 .song-list {
     display: flex;
     flex-direction: column;
     gap: 4px;
+
     margin-bottom: 10px;
     list-style-position: inside;
 }
 
 .song-list > .song-item {
     width: 100%;
+    text-align: left;
 }
 
-#archiveButton, .back-button, #generatePdfBtn {
+/* Archive navigation */
+
+#archiveButton,
+.back-button,
+#backButton,
+#generatePdfBtn {
     background: var(--highlight);
 }
 
-#archiveButton:hover, .back-button:hover,
+#archiveButton:hover,
+.back-button:hover,
+#backButton:hover,
 #generatePdfBtn:hover {
     background: var(--accent);
 }
 
-#toc > .song-item {
+#archiveButton {
     margin-top: var(--gap);
 }
 
-.back-button {
+.back-button,
+#song > .song-item {
     margin: 12px 0;
 }
 
+/* ==========================================
+   DEVELOPER NAVIGATION
+========================================== */
+
+/*
+   Developer controls stay hidden unless
+   developer mode is enabled.
+*/
+
+.dev-only {
+    display: none !important;
+}
+
+body.dev-mode .dev-only {
+    display: block !important;
+}
+
+/*
+   Navigation is one centered column.
+   Gap owns the spacing; individual buttons
+   do not have competing margins.
+*/
+
 .dev-navigation {
-    display: grid;
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+
+    width: max-content;
+    max-width: 100%;
+    margin: 16px auto 0;
+}
+
+body.dev-mode .dev-navigation {
+    display: flex !important;
+}
+
+/*
+   Works whether dev-only is applied to
+   each button or to the parent container.
+*/
+
+.dev-navigation > .song-item {
+    display: block;
+    width: 100%;
+
+    margin: 0;
+    padding: 9px 16px;
+
+    color: var(--font-body);
+    background: var(--background-accent);
+
+    border: none;
+    border-radius: var(--radius);
+
+    text-align: center;
+    white-space: normal;
+}
+
+.dev-navigation > .song-item:hover {
+    background: var(--highlight);
+}
+
+body:not(.dev-mode) .dev-navigation {
+    display: none !important;
+}
+
+/* ==========================================
+   ARCHIVE SONGS
+========================================== */
+
+.archive-song,
+.song-item:has(.song-date) {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     gap: var(--gap);
-    margin-top: 12px;
+    text-align: left;
+}
+
+.archive-details,
+.song-item > div:has(.song-date) {
+    display: flex;
+    align-items: center;
+    gap: var(--gap);
+}
+
+.song-date,
+.archive-details {
+    opacity: 0.65;
+    font-size: 0.85em;
 }
 
 .song-list-date {
@@ -198,30 +320,12 @@ button:disabled {
     text-align: center;
 }
 
-.archive-song {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: var(--gap);
-}
-
-.archive-details {
-    display: flex;
-    align-items: center;
-    gap: var(--gap);
-    opacity: .65;
-    font-size: .85em;
-}
-
-#songContent > .song-item {
-    margin: 15px 0;
-}
-
-/* ================================
+/* ==========================================
    SONG DETAILS
-================================ */
+========================================== */
 
-.song-header, .song-footer {
+.song-header,
+.song-footer {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -229,13 +333,14 @@ button:disabled {
 
 .song-title {
     margin-bottom: var(--gap);
+
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--font-head);
 }
 
 .song-author {
-    font-size: .9rem;
+    font-size: 0.9rem;
     color: var(--font-sub);
 }
 
@@ -245,85 +350,130 @@ button:disabled {
     gap: 40px;
 }
 
+.song-section {
+    display: block;
+}
+
 .section-label {
     margin-bottom: var(--gap);
+
     color: var(--font-sub);
-    font-size: .7rem;
+    font-size: 0.7rem;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: .5px;
+    letter-spacing: 0.5px;
 }
 
 .section-lyrics {
     font-size: 1.1rem;
     line-height: 1.6;
     hyphens: auto;
+    -webkit-hyphens: auto;
 }
 
 .lyric-gap {
-    height: .75em;
+    height: 0.75em;
 }
 
-.error-msg {
-    padding: 20px;
-    color: var(--error);
-    text-align: center;
-}
+/* ==========================================
+   EDIT SONG BUTTON
+========================================== */
 
-/* Center the Edit Song button */
+/*
+   Supports Edit Song as a direct child
+   of songContent.
+*/
+
 #songContent > .song-item {
     display: block;
     width: fit-content;
-    margin: 15px auto;
+
+    margin: 20px auto !important;
+    padding: 9px 16px;
+
     text-align: center;
+    font: inherit;
 }
 
-/* Space out developer navigation buttons */
-.dev-navigation {
+/*
+   Also supports the newer Edit Song
+   wrapper generated by JavaScript.
+*/
+
+.song-edit-actions {
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    gap: 10px;
-    margin-top: 15px;
+
+    width: 100%;
+    margin: 20px 0;
 }
 
-/* Consistent sizing and centering */
-.dev-navigation .song-item {
-    display: block;
-    width: fit-content;
-    text-align: center;
+.song-edit-actions > .song-item {
     margin: 0;
+    padding: 9px 16px;
+    font: inherit;
+    text-align: center;
 }
 
-/* ================================
+body.dev-mode .song-edit-actions > .dev-only {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ==========================================
    SITE TOGGLES
-================================ */
+========================================== */
 
 .site-controls {
     position: fixed;
     top: 12px;
     right: 12px;
     z-index: 9999;
+
     display: flex;
+    align-items: center;
     gap: var(--gap);
 }
 
-.site-toggle {
+/*
+   Both the previous and standardized
+   class names use identical styling.
+*/
+
+.site-toggle,
+.site-controls .focus-button,
+.site-controls .dev-button {
     position: static;
+    inset: auto;
+    transform: none;
+
     display: inline-flex;
     align-items: center;
     justify-content: center;
+
+    flex-shrink: 0;
+
     width: var(--control-height);
     height: var(--control-height);
+
     padding: 0;
-    border: 0;
+    margin: 0;
+
+    border: none;
     border-radius: 50%;
+
     background: var(--background);
     color: var(--font-sub);
+
     font-size: 1rem;
+    line-height: 1;
 }
 
-.site-toggle:hover {
+.site-toggle:hover,
+.site-controls .focus-button:hover,
+.site-controls .dev-button:hover {
     background: var(--highlight);
 }
 
@@ -332,19 +482,12 @@ button:disabled {
     color: var(--background);
 }
 
-.dev-only {
-    display: none !important;
-}
-
-.dev-mode .dev-only {
-    display: revert !important;
-}
-
-/* ================================
+/* ==========================================
    SHARED EDITOR FORMS
-================================ */
+========================================== */
 
-#editorContent, #listEditorContent {
+#editorContent,
+#listEditorContent {
     width: 100%;
     min-width: 0;
 }
@@ -363,28 +506,38 @@ button:disabled {
     margin: 28px 0 10px;
 }
 
-.form-hint {
+.form-hint,
+.editor-hint {
     margin: 5px 0 15px;
-    font-size: .88rem;
+    font-size: 0.88rem;
 }
+
+/* Labels */
 
 .editor-shell label {
     display: block;
     margin: 14px 0 5px;
+
     color: var(--font-sub);
     font-weight: 600;
 }
+
+/* Form fields */
 
 .editor-shell input,
 .editor-shell textarea,
 .editor-shell select {
     display: block;
+
     width: 100%;
     min-width: 0;
     min-height: var(--control-height);
+
     padding: 9px 12px;
+
     background: var(--background-accent);
     color: var(--font-body);
+
     border: 1px solid var(--accent);
     border-radius: var(--radius);
 }
@@ -394,84 +547,127 @@ button:disabled {
     resize: vertical;
 }
 
+.editor-shell input::placeholder,
+.editor-shell textarea::placeholder {
+    color: var(--font-sub);
+    opacity: 0.75;
+}
+
+/* Shared editor buttons */
+
 .editor-shell button {
     min-height: var(--control-height);
     padding: 9px 12px;
-    border: 1px solid var(--accent);
-    border-radius: var(--radius);
+    margin: 0;
+
+    flex-shrink: 0;
+
     background: var(--highlight);
     color: var(--font-body);
+
+    border: 1px solid var(--accent);
+    border-radius: var(--radius);
+
     line-height: 1.3;
-    transition: background .15s;
+    transition: background-color 0.15s;
 }
 
 .editor-shell button:hover:not(:disabled) {
     background: var(--accent);
 }
 
-.editor-shell .button-primary {
+/* Primary actions */
+
+.editor-shell .button-primary,
+.editor-shell .editor-primary {
     background: var(--accent);
     color: var(--background);
     font-weight: 700;
 }
 
-.editor-shell .button-primary:hover:not(:disabled) {
+.editor-shell .button-primary:hover:not(:disabled),
+.editor-shell .editor-primary:hover:not(:disabled) {
     filter: brightness(1.1);
 }
 
-/* ================================
-   SHARED LAYOUT COMPONENTS
-================================ */
+/* ==========================================
+   SHARED EDITOR LAYOUT
+========================================== */
 
-/* All horizontal form rows */
+/*
+   Applies to both the standardized classes
+   and the earlier editor-specific classes.
+*/
 
-.control-row {
+.control-row,
+.editor-section-header,
+.editor-order-row,
+.list-editor-row {
     display: flex;
     align-items: center;
     gap: var(--gap);
+
     width: 100%;
     min-width: 0;
     margin: 0;
 }
 
-.control-row > :is(input, select) {
+.control-row > :is(input, select),
+.editor-section-header > input,
+.editor-order-row > select,
+.list-editor-row > :is(input, select) {
     flex: 1 1 0;
     width: auto;
     min-width: 0;
 }
 
-.control-row > button {
+.control-row > button,
+.editor-section-header > button,
+.editor-order-row > button,
+.list-editor-row > button {
     flex: 0 0 auto;
 }
 
-/* All stacked row collections */
+/* Stacked control groups */
 
-.control-list {
+.control-list,
+#arrangementList,
+#listSongRows,
+#listCreditRows {
     display: flex;
     flex-direction: column;
     gap: var(--gap);
 }
 
-.control-list > * {
+.control-list > *,
+#arrangementList > *,
+#listSongRows > *,
+#listCreditRows > * {
     margin: 0;
 }
 
-/* All submit / action groups */
+/* Shared action groups */
 
-.form-actions {
+.form-actions,
+.editor-actions {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
     gap: var(--gap);
+
     margin-top: 24px;
 }
 
-/* Song lyric panels */
+/* ==========================================
+   LYRIC SECTION PANELS
+========================================== */
 
 .editor-section {
     margin: 12px 0;
     padding: 15px;
+
     background: var(--background-accent);
+
     border: 1px solid var(--accent);
     border-radius: var(--radius);
 }
@@ -480,57 +676,81 @@ button:disabled {
     width: 100%;
 }
 
-/* Standalone add buttons */
+/* ==========================================
+   ADD BUTTONS
+========================================== */
 
-#addSection, #addOccurrence,
-#listAddSong, #listAddCredit {
+#addSection,
+#addOccurrence,
+#listAddSong,
+#listAddCredit {
     margin: 12px 0;
 }
-
-/* Controls that must remain beside each other */
 
 #listAddSongID {
     white-space: nowrap;
 }
 
-/* YAML preview */
+#listSubmit {
+    margin-top: 20px;
+}
+
+/* ==========================================
+   STATUS AND YAML PREVIEW
+========================================== */
 
 #preview {
     max-width: 100%;
     margin: 15px 0;
     padding: 15px;
-    border-radius: var(--radius);
+
     background: var(--background-accent);
     color: var(--font-body);
+
+    border-radius: var(--radius);
     white-space: pre-wrap;
     overflow-wrap: anywhere;
 }
 
-/* Shared status messages */
-
-.form-status {
+.form-status,
+#status,
+#listStatus {
     margin-top: 15px;
     color: var(--font-sub);
     white-space: pre-wrap;
     overflow-wrap: anywhere;
 }
 
-.form-status.error {
+.form-status.error,
+#status.error,
+#listStatus.error,
+.error-msg {
     color: var(--error);
 }
 
-.form-status.success {
+.form-status.success,
+#status.success,
+#listStatus.success {
     color: var(--success);
 }
 
-/* ================================
-   FOOTER AND PRINT
-================================ */
+.error-msg {
+    padding: 20px;
+    text-align: center;
+}
+
+/* ==========================================
+   FOOTER
+========================================== */
 
 footer {
     gap: 10px;
     text-align: center;
 }
+
+/* ==========================================
+   PRINT PAGE
+========================================== */
 
 .print-instructions {
     width: 100%;
@@ -553,38 +773,47 @@ footer {
 #generatePdfBtn {
     min-height: var(--control-height);
     padding: 9px 12px;
-    border: 0;
+
+    border: none;
     border-radius: var(--radius);
+
     color: var(--font-body);
 }
 
 .spinner {
     display: inline-block;
+
     width: 14px;
     height: 14px;
+
     border: 2px solid var(--font-body);
     border-top-color: transparent;
     border-radius: 50%;
-    animation: spin .8s linear infinite;
+
+    animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .print-status {
     display: none;
     margin-top: 15px;
     padding: 10px;
+
     color: var(--font-body);
     text-align: center;
+
     outline: 2px solid;
     border-radius: var(--radius);
 }
 
-/* ================================
+/* ==========================================
    RESPONSIVE
-================================ */
+========================================== */
 
 @media (min-width: 480px) {
     .song-section {
@@ -614,7 +843,9 @@ footer {
 }
 
 @media (max-width: 479px) {
-    body { padding: 15px; }
+    body {
+        padding: 15px;
+    }
 
     .site-controls {
         top: 8px;
@@ -622,28 +853,41 @@ footer {
         gap: 5px;
     }
 
-    /* Give credit inputs their own rows */
-    #listCreditRows .control-row {
+    /* Give credit inputs adequate width */
+
+    #listCreditRows .control-row,
+    #listCreditRows .list-editor-row {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: var(--gap);
     }
 
-    #listCreditRows .control-row > input {
+    #listCreditRows .control-row > input,
+    #listCreditRows .list-editor-row > input {
         grid-column: 1 / -1;
         width: 100%;
     }
 
-    #listCreditRows .control-row > button {
+    #listCreditRows .control-row > button,
+    #listCreditRows .list-editor-row > button {
         width: 100%;
     }
 
-    /* Keep arrangement buttons compact */
-    .control-row > button {
+    /* Keep rearrangement controls compact */
+
+    .control-row > button,
+    .editor-order-row > button,
+    .list-editor-row > button {
         padding: 7px 9px;
     }
 }
 
 @media (max-width: 360px) {
-    .song-title { font-size: 1.3rem; }
-    .section-lyrics { font-size: .9rem; }
+    .song-title {
+        font-size: 1.3rem;
+    }
+
+    .section-lyrics {
+        font-size: 0.9rem;
+    }
 }

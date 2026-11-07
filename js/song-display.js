@@ -242,18 +242,21 @@ async function displaySong(data) {
     } else {
         setSongContent(buildSong(song));
 
-        // Developer-only edit control.
-        const editButton = document.createElement('button');
+		const editContainer = document.createElement('div');
+		editContainer.className = 'song-edit-actions';
 
-        editButton.type = 'button';
-        editButton.textContent = 'Edit Song';
-        editButton.className = 'song-item dev-only';
+		const editButton = document.createElement('button');
+		editButton.type = 'button';
+		editButton.className = 'song-item dev-only';
+		editButton.textContent = 'Edit Song';
 
-        editButton.addEventListener('click', () => {
-            navEdit(songID);
-        });
+		editButton.addEventListener('click', () => {
+			navEdit(songID);
+		});
 
-        songContent.append(editButton);
+		editContainer.append(editButton);
+		songContent.append(editContainer);
+
     }
 
     toggleSongDisplay(true);
