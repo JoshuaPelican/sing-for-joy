@@ -1,0 +1,17 @@
+name: "Test1"
+author: "Test1"
+
+arrangement: [verse1, chorus, bridge, bruh, bruh, bruh]
+
+elements:
+  bridge:
+    - "Test"
+
+  bruh:
+    - "bruh"
+
+  chorus:
+    - "Test"
+
+  verse1:
+    - "Test"
