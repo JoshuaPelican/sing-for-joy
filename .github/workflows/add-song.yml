@@ -1,9 +1,8 @@
-
-name: Add Song
+name: Save Song
 
 on:
   repository_dispatch:
-    types: [add_song]
+    types: [save_song]
 
 permissions:
   contents: write
@@ -13,16 +12,15 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  create-song:
+  save-song:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.repository.default_branch }}
 
-      - name: Generate song YAML
+      - name: Generate or update YAML
         env:
           SONG_JSON: ${{ toJSON(github.event.client_payload) }}
           RUN_ID: ${{ github.run_id }}
@@ -33,105 +31,80 @@ jobs:
           import re
           from pathlib import Path
 
-          song = json.loads(os.environ["SONG_JSON"])
+          song = json.loads(os.environ['SONG_JSON'])
+          mode = song.get('mode')
+          if mode not in ('add', 'edit'):
+              raise ValueError('Invalid mode')
 
-          def quote(value):
-              # Double-quoted YAML strings.
-              # Escapes apostrophes, quotes, colons, etc. safely.
-              return json.dumps(value, ensure_ascii=False)
+          name = song['name'].strip()
+          author = song['author'].strip()
+          artist = song.get('artist', '').strip()
+          arrangement = song['arrangement']
+          elements = song['elements']
+          key_format = re.compile(r'[a-z][a-z0-9]*\Z')
+          song_id_format = re.compile(r'[a-z0-9]+(?:-[a-z0-9]+)*\Z')
 
-          name = song["name"].strip()
-          author = song["author"].strip()
-          artist = song.get("artist", "").strip()
-          arrangement = [
-              key.strip()
-              for key in song["arrangement"].split(",")
-          ]
-          elements = song["elements"]
+          if not name or not author or any(len(s) > 150 for s in (name, author, artist)):
+              raise ValueError('Invalid song metadata')
+          if not isinstance(arrangement, list) or not arrangement:
+              raise ValueError('Arrangement must be a nonempty list')
+          if not all(isinstance(k, str) and key_format.fullmatch(k) for k in arrangement):
+              raise ValueError('Invalid arrangement key')
+          if not isinstance(elements, dict) or set(arrangement) != set(elements):
+              raise ValueError('Arrangement and elements do not match')
+          if not all(key_format.fullmatch(k) for k in elements):
+              raise ValueError('Invalid element key')
+          if not all(isinstance(lines, list) and lines and all(isinstance(s, str) for s in lines)
+                     for lines in elements.values()):
+              raise ValueError('Invalid lyric lines')
 
-          # Validate metadata.
-          if not name or not author:
-              raise ValueError("Name and author are required")
+          folder = Path('songs')
+          folder.mkdir(exist_ok=True)
+          if mode == 'edit':
+              song_id = song.get('song_id', '')
+              if not isinstance(song_id, str) or not song_id_format.fullmatch(song_id):
+                  raise ValueError('Invalid song ID')
+              filename = folder / f'{song_id}.yaml'
+              if not filename.is_file():
+                  raise FileNotFoundError(f'Cannot edit missing file: {filename}')
+          else:
+              slug = re.sub(r'[^a-z0-9]+', '-', name.lower()).strip('-')[:70].strip('-') or 'song'
+              filename = folder / f'{slug}-{os.environ["RUN_ID"]}.yaml'
+              if filename.exists():
+                  raise FileExistsError(filename)
 
-          if any(len(value) > 150 for value in (name, author, artist)):
-              raise ValueError("Metadata exceeds length limit")
-
-          # Validate arrangement.
-          pattern = re.compile(r"^[a-z][a-z0-9]*$")
-
-          if not arrangement or any(
-              not pattern.fullmatch(key) for key in arrangement
-          ):
-              raise ValueError("Invalid arrangement")
-
-          if not isinstance(elements, dict):
-              raise ValueError("Invalid elements")
-
-          if set(arrangement) != set(elements):
-              raise ValueError("Arrangement and elements do not match")
-
-          # Build YAML.
-          lines = [
-              f"name: {quote(name)}",
-              f"author: {quote(author)}"
-          ]
-
+          # JSON double-quoted scalars are valid YAML. An array is essential:
+          # existing js/song-display.js uses song.arrangement.forEach(...).
+          quote = lambda value: json.dumps(value, ensure_ascii=False)
+          lines = [f'name: {quote(name)}', f'author: {quote(author)}']
           if artist:
-              lines.append(f"artist: {quote(artist)}")
-
-          lines.extend([
-              "",
-              f"arrangement: {', '.join(arrangement)}",
-              "",
-              "elements:"
-          ])
-
+              lines.append(f'artist: {quote(artist)}')
+          lines.extend(['', 'arrangement: [' + ', '.join(arrangement) + ']', '', 'elements:'])
           for key, lyrics in elements.items():
-              if not pattern.fullmatch(key):
-                  raise ValueError("Invalid section key")
-
-              if not isinstance(lyrics, list):
-                  raise ValueError("Lyrics must be a list")
-
-              if not lyrics or not all(
-                  isinstance(line, str) for line in lyrics
-              ):
-                  raise ValueError("Invalid lyric lines")
-
-              lines.append(f"  {key}:")
-
-              for line in lyrics:
-                  lines.append(f"    - {quote(line)}")
-
-              lines.append("")
-
-          # Generate filename.
-          slug = re.sub(
-              r"[^a-z0-9]+", "-", name.lower()
-          ).strip("-")[:70].strip("-") or "song"
-
-          folder = Path("songs")
-          folder.mkdir(parents=True, exist_ok=True)
-
-          filename = folder / f"{slug}-{os.environ['RUN_ID']}.yaml"
-
-          filename.write_text(
-              "\n".join(lines).rstrip() + "\n",
-              encoding="utf-8"
-          )
-
-          print(f"Created {filename}")
+              lines.append(f'  {key}:')
+              for lyric in lyrics:
+                  lines.append(f'    - {quote(lyric)}')
+              lines.append('')
+          filename.write_text('\n'.join(lines).rstrip() + '\n', encoding='utf-8')
+          with open(os.environ['GITHUB_ENV'], 'a', encoding='utf-8') as env_file:
+              env_file.write('SONG_MODE=' + mode + '\n')
+              # Use a multiline env value so newlines in titles can't modify env files.
+              env_file.write('SONG_NAME<<SONG_TITLE_EOF\n' + name.replace('\r', ' ') + '\nSONG_TITLE_EOF\n')
+          print('Saved', filename)
           PY
 
-      
       - name: Commit and push
-        env:
-          SONG_NAME: ${{ github.event.client_payload.name }}
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add songs/
-          git commit -m "Add song: $SONG_NAME"
+          if git diff --cached --quiet; then
+            echo 'No song changes to commit'
+            exit 0
+          fi
+          if [ "$SONG_MODE" = edit ]; then
+            git commit -m "Edit song: $SONG_NAME"
+          else
+            git commit -m "Add song: $SONG_NAME"
+          fi
           git push
-
