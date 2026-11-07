@@ -1,5 +1,24 @@
-
 const songFiles = [
+  {
+    "date": "11-13-2026",
+    "songs": [
+      "test"
+    ],
+    "credits": [
+      {
+        "name": "Jennifer Ou",
+        "role": "Organization"
+      },
+      {
+        "name": "Daniel Yen",
+        "role": "Location"
+      },
+      {
+        "name": "Joshua Pelkington",
+        "role": "Lyrics"
+      }
+    ]
+  },
   {
     "date": "9-18-2026",
     "songs": [
