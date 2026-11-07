@@ -229,8 +229,6 @@ async function displaySong(data) {
     editLink.href = `#/edit?id=${encodeURIComponent(songID)}`;
     editLink.textContent = 'Edit Song';
     editLink.className = 'song-item dev-only';
-    editLink.style.margin = '15px 0';
-
     editLink.addEventListener('click', event => {
       event.preventDefault();
       navEdit(songID);
