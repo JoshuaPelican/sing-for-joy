@@ -267,7 +267,6 @@ body.dev-mode .dev-navigation {
     width: 100%;
 
     margin: 0;
-    padding: 9px 16px;
 
     color: var(--font-body);
     background: var(--background-accent);
