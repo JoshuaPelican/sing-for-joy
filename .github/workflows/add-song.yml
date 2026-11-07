@@ -69,7 +69,7 @@ jobs:
                   raise FileNotFoundError(f'Cannot edit missing file: {filename}')
           else:
               slug = re.sub(r'[^a-z0-9]+', '-', name.lower()).strip('-')[:70].strip('-') or 'song'
-              filename = folder / f'{slug}-{os.environ["RUN_ID"]}.yaml'
+              filename = folder / f'{slug}.yaml'
               if filename.exists():
                   raise FileExistsError(filename)
 
