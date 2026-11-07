@@ -270,6 +270,31 @@ button:disabled {
     text-align: center;
 }
 
+/* Center the Edit Song button */
+#songContent > .song-item {
+    display: block;
+    width: fit-content;
+    margin: 15px auto;
+    text-align: center;
+}
+
+/* Space out developer navigation buttons */
+.dev-navigation {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+/* Consistent sizing and centering */
+.dev-navigation .song-item {
+    display: block;
+    width: fit-content;
+    text-align: center;
+    margin: 0;
+}
+
 /* ================================
    SITE TOGGLES
 ================================ */
