@@ -57,6 +57,12 @@ async function displaySong(songData) {
 	} else {
 		const html = buildSong(song);
 		setSongContent(html);
+		const editLink = document.createElement('a');
+		editLink.href = `add-song.html?edit=${encodeURIComponent(songData.params.id)}`;
+		editLink.textContent = 'Edit song';
+		editLink.className = 'song-item';
+		editLink.style.margin = '15px 0';
+		songContent.appendChild(editLink);
 	}
 	toggleSongDisplay(true);
 }
