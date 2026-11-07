@@ -1,0 +1,22 @@
+name: "Test"
+author: "Test"
+
+arrangement: verse1, bridge, verse1, chorus
+
+elements:
+  bridge:
+    - "TestTest"
+    - "Test"
+    - ""
+    - ""
+    - "Test"
+
+  chorus:
+    - "Test"
+    - "Test'Test"
+
+  verse1:
+    - "Test"
+    - "Test"
+    - ""
+    - "Test"
