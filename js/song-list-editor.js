@@ -364,7 +364,6 @@
             : 'Create Song List';
 
         $('listToken').value = '';
-        $('listNewSongID').value = '';
 
         notice('');
 
@@ -386,31 +385,6 @@
         }
 
         songs.push(songIDs[0]);
-        renderSongs();
-        notice('');
-    });
-
-    // ----------------------------
-    // ADD SONG BY ID
-    // ----------------------------
-
-    $('listAddSongID').addEventListener('click', () => {
-        const id = $('listNewSongID').value.trim();
-
-        if (!songIDPattern.test(id)) {
-            notice('Enter a valid song file ID.', 'error');
-            return;
-        }
-
-        if (!songIDs.includes(id)) {
-            songIDs.push(id);
-            songIDs.sort();
-        }
-
-        songs.push(id);
-
-        $('listNewSongID').value = '';
-
         renderSongs();
         notice('');
     });
