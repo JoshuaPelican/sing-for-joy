@@ -9,6 +9,8 @@ const archiveButton = document.getElementById('archiveButton');
 const credits = document.getElementById('credits');
 const footer = document.querySelector('footer');
 
+const songIDPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
 function escapeHTML(value) {
   return String(value ?? '').replace(
     /[&<>"']/g,
@@ -20,6 +22,33 @@ function escapeHTML(value) {
       "'": '&#39;'
     }[c])
   );
+}
+
+// ----------------------------
+// SONG CATALOG
+// ----------------------------
+
+async function loadSongCatalog() {
+  const response = await fetch('songs/index.json', {
+    cache: 'no-store'
+  });
+
+  if (!response.ok) {
+    throw Error(`Song catalog unavailable (${response.status})`);
+  }
+
+  const catalog = await response.json();
+
+  if (
+    !Array.isArray(catalog) ||
+    !catalog.every(id =>
+      typeof id === 'string' && songIDPattern.test(id)
+    )
+  ) {
+    throw Error('Invalid song catalog');
+  }
+
+  return [...new Set(catalog)];
 }
 
 // ----------------------------
@@ -113,7 +142,7 @@ async function fetchAndCacheSong(songID) {
   let songData;
 
   try {
-    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(songID)) {
+    if (!songIDPattern.test(songID)) {
       throw Error('Invalid song ID');
     }
 
@@ -127,10 +156,20 @@ async function fetchAndCacheSong(songID) {
 
     const parsed = jsyaml.load(await response.text());
 
+    if (
+      !parsed ||
+      typeof parsed.name !== 'string' ||
+      !Array.isArray(parsed.arrangement) ||
+      !parsed.elements ||
+      typeof parsed.elements !== 'object'
+    ) {
+      throw Error('Invalid song YAML format');
+    }
+
     songData = {
       id: songID,
       name: parsed.name,
-      author: parsed.author,
+      author: parsed.author || '',
       artist: parsed.artist,
       arrangement: parsed.arrangement,
       elements: parsed.elements,
@@ -166,10 +205,8 @@ async function displaySong(data) {
   hideEditors();
 
   const songID = data.params.id;
-
   const song = await tryGetSong(songID);
 
-  // Prevent old fetches from overwriting a newer page.
   if (
     router.currentRoute !== '/song' ||
     new URLSearchParams(
@@ -182,21 +219,15 @@ async function displaySong(data) {
   if (!song || song.error) {
     setSongContent(`
       <div class="error-msg">
-        Error displaying song:
-        ${escapeHTML(songID)}
+        Error displaying song: ${escapeHTML(songID)}
       </div>
     `);
   } else {
     setSongContent(buildSong(song));
 
-    // Developer-only edit button.
     const editLink = document.createElement('a');
-
-    editLink.href =
-      `#/edit?id=${encodeURIComponent(songID)}`;
-
+    editLink.href = `#/edit?id=${encodeURIComponent(songID)}`;
     editLink.textContent = 'Edit Song';
-
     editLink.className = 'song-item dev-only';
     editLink.style.margin = '15px 0';
 
@@ -269,7 +300,6 @@ async function buildSongList(songIDs) {
   );
 
   items.forEach(li => ol.append(li));
-
   return ol;
 }
 
@@ -312,13 +342,11 @@ function updateArchiveButton(isArchive) {
 
 async function displayHome() {
   hideEditors();
-
   tocSongList.replaceChildren();
   toggleSongDisplay(false);
   updateArchiveButton(false);
 
   const list = songFiles?.[0];
-
   loadCredits(list);
 
   if (!list) return;
@@ -344,15 +372,13 @@ async function displayHome() {
 
 async function displayArchive() {
   hideEditors();
-
   tocSongList.replaceChildren();
   toggleSongDisplay(false);
   updateArchiveButton(true);
 
-  if (!songFiles) return;
-
   const songDateMap = new Map();
 
+  // Build performance history from dated lists.
   for (const list of songFiles) {
     for (const id of list.songs) {
       if (!songDateMap.has(id)) {
@@ -366,13 +392,36 @@ async function displayArchive() {
     }
   }
 
-  const allSongIDs = [...songDateMap.keys()];
+  // Merge the complete catalog with performance history.
+  const allSongIDs = new Set(songDateMap.keys());
+
+  try {
+    const catalog = await loadSongCatalog();
+
+    for (const id of catalog) {
+      allSongIDs.add(id);
+
+      if (!songDateMap.has(id)) {
+        songDateMap.set(id, {
+          last_sung: null,
+          count: 0
+        });
+      }
+    }
+  } catch (error) {
+    console.error('Unable to load song catalog:', error);
+
+    // The archive still shows songs from config.js
+    // if the catalog cannot be loaded.
+  }
+
+  const ids = [...allSongIDs];
 
   await Promise.all(
-    allSongIDs.map(id => tryGetSong(id))
+    ids.map(id => tryGetSong(id))
   );
 
-  allSongIDs.sort((a, b) =>
+  ids.sort((a, b) =>
     (songCache.get(a)?.name ?? a).localeCompare(
       songCache.get(b)?.name ?? b
     )
@@ -381,7 +430,7 @@ async function displayArchive() {
   const ol = document.createElement('ol');
   ol.className = 'song-list';
 
-  for (const id of allSongIDs) {
+  for (const id of ids) {
     const song = await tryGetSong(id);
     const { last_sung, count } = songDateMap.get(id);
 
@@ -398,7 +447,7 @@ async function displayArchive() {
 
       const date = document.createElement('i');
       date.className = 'song-date';
-      date.textContent = last_sung;
+      date.textContent = last_sung || 'Not yet sung';
 
       const tally = document.createElement('p');
       tally.textContent = count > 1
@@ -426,7 +475,6 @@ async function displayArchive() {
 function displayEditor(data) {
   hideEditors();
   setSongContent('');
-
   toggleSongDisplay(true);
 
   document.getElementById('editorContent').hidden = false;
@@ -441,7 +489,6 @@ function displayEditor(data) {
 function displayListEditor(data) {
   hideEditors();
   setSongContent('');
-
   toggleSongDisplay(true);
 
   document.getElementById('listEditorContent').hidden = false;

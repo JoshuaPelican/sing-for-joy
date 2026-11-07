@@ -1,8 +1,10 @@
+
 name: Save Song
 
 on:
   repository_dispatch:
     types: [save_song]
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -14,6 +16,7 @@ concurrency:
 jobs:
   save-song:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -21,9 +24,9 @@ jobs:
           ref: ${{ github.event.repository.default_branch }}
 
       - name: Generate or update YAML
+        if: github.event_name == 'repository_dispatch'
         env:
           SONG_JSON: ${{ toJSON(github.event.client_payload) }}
-          RUN_ID: ${{ github.run_id }}
         run: |
           python3 - <<'PY'
           import json
@@ -33,6 +36,7 @@ jobs:
 
           song = json.loads(os.environ['SONG_JSON'])
           mode = song.get('mode')
+
           if mode not in ('add', 'edit'):
               raise ValueError('Invalid mode')
 
@@ -41,70 +45,175 @@ jobs:
           artist = song.get('artist', '').strip()
           arrangement = song['arrangement']
           elements = song['elements']
-          key_format = re.compile(r'[a-z][a-z0-9]*\Z')
-          song_id_format = re.compile(r'[a-z0-9]+(?:-[a-z0-9]+)*\Z')
 
-          if not name or not author or any(len(s) > 150 for s in (name, author, artist)):
+          key_format = re.compile(r'[a-z][a-z0-9]*\Z')
+          song_id_format = re.compile(
+              r'[a-z0-9]+(?:-[a-z0-9]+)*\Z'
+          )
+
+          if not name or not author or any(
+              len(s) > 150 for s in (name, author, artist)
+          ):
               raise ValueError('Invalid song metadata')
+
           if not isinstance(arrangement, list) or not arrangement:
               raise ValueError('Arrangement must be a nonempty list')
-          if not all(isinstance(k, str) and key_format.fullmatch(k) for k in arrangement):
+
+          if not all(
+              isinstance(k, str) and key_format.fullmatch(k)
+              for k in arrangement
+          ):
               raise ValueError('Invalid arrangement key')
-          if not isinstance(elements, dict) or set(arrangement) != set(elements):
+
+          if not isinstance(elements, dict):
+              raise ValueError('Invalid elements')
+
+          if set(arrangement) != set(elements):
               raise ValueError('Arrangement and elements do not match')
-          if not all(key_format.fullmatch(k) for k in elements):
+
+          if not all(
+              isinstance(k, str) and key_format.fullmatch(k)
+              for k in elements
+          ):
               raise ValueError('Invalid element key')
-          if not all(isinstance(lines, list) and lines and all(isinstance(s, str) for s in lines)
-                     for lines in elements.values()):
+
+          if not all(
+              isinstance(lines, list)
+              and lines
+              and all(isinstance(s, str) for s in lines)
+              for lines in elements.values()
+          ):
               raise ValueError('Invalid lyric lines')
 
           folder = Path('songs')
           folder.mkdir(exist_ok=True)
+
           if mode == 'edit':
               song_id = song.get('song_id', '')
-              if not isinstance(song_id, str) or not song_id_format.fullmatch(song_id):
-                  raise ValueError('Invalid song ID')
-              filename = folder / f'{song_id}.yaml'
-              if not filename.is_file():
-                  raise FileNotFoundError(f'Cannot edit missing file: {filename}')
-          else:
-              slug = re.sub(r'[^a-z0-9]+', '-', name.lower()).strip('-')[:70].strip('-') or 'song'
-              filename = folder / f'{slug}.yaml'
-              if filename.exists():
-                  raise FileExistsError(filename)
 
-          # JSON double-quoted scalars are valid YAML. An array is essential:
-          # existing js/song-display.js uses song.arrangement.forEach(...).
-          quote = lambda value: json.dumps(value, ensure_ascii=False)
-          lines = [f'name: {quote(name)}', f'author: {quote(author)}']
+              if (
+                  not isinstance(song_id, str)
+                  or not song_id_format.fullmatch(song_id)
+              ):
+                  raise ValueError('Invalid song ID')
+
+              filename = folder / f'{song_id}.yaml'
+
+              if not filename.is_file():
+                  raise FileNotFoundError(
+                      f'Cannot edit missing song: {filename}'
+                  )
+          else:
+              slug = re.sub(
+                  r'[^a-z0-9]+', '-', name.lower()
+              ).strip('-')[:70].strip('-') or 'song'
+
+              filename = folder / f'{slug}.yaml'
+
+              if filename.exists():
+                  raise FileExistsError(
+                      f'Song already exists: {filename}'
+                  )
+
+          quote = lambda value: json.dumps(
+              value, ensure_ascii=False
+          )
+
+          lines = [
+              f'name: {quote(name)}',
+              f'author: {quote(author)}'
+          ]
+
           if artist:
               lines.append(f'artist: {quote(artist)}')
-          lines.extend(['', 'arrangement: [' + ', '.join(arrangement) + ']', '', 'elements:'])
+
+          lines.extend([
+              '',
+              'arrangement: [' + ', '.join(arrangement) + ']',
+              '',
+              'elements:'
+          ])
+
           for key, lyrics in elements.items():
               lines.append(f'  {key}:')
+
               for lyric in lyrics:
                   lines.append(f'    - {quote(lyric)}')
+
               lines.append('')
-          filename.write_text('\n'.join(lines).rstrip() + '\n', encoding='utf-8')
-          with open(os.environ['GITHUB_ENV'], 'a', encoding='utf-8') as env_file:
-              env_file.write('SONG_MODE=' + mode + '\n')
-              # Use a multiline env value so newlines in titles can't modify env files.
-              env_file.write('SONG_NAME<<SONG_TITLE_EOF\n' + name.replace('\r', ' ') + '\nSONG_TITLE_EOF\n')
+
+          filename.write_text(
+              '\n'.join(lines).rstrip() + '\n',
+              encoding='utf-8'
+          )
+
+          with open(
+              os.environ['GITHUB_ENV'], 'a', encoding='utf-8'
+          ) as env_file:
+              env_file.write(f'SONG_MODE={mode}\n')
+
+              # Safe multiline output for commit messages.
+              delimiter = 'SONG_NAME_END_8f31b91e'
+
+              if delimiter in name:
+                  raise ValueError('Invalid title delimiter')
+
+              env_file.write(
+                  f'SONG_NAME<<{delimiter}\n'
+                  + name.replace('\r', ' ')
+                  + f'\n{delimiter}\n'
+              )
+
           print('Saved', filename)
           PY
 
+      - name: Update song catalog
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          folder = Path('songs')
+          folder.mkdir(exist_ok=True)
+
+          song_ids = sorted({
+              path.stem
+              for path in folder.iterdir()
+              if path.is_file()
+              and path.suffix.lower() in ('.yaml', '.yml')
+          })
+
+          catalog = folder / 'index.json'
+
+          catalog.write_text(
+              json.dumps(song_ids, indent=2, ensure_ascii=False)
+              + '\n',
+              encoding='utf-8'
+          )
+
+          print(f'Indexed {len(song_ids)} songs')
+          PY
+
       - name: Commit and push
+        env:
+          EVENT_NAME: ${{ github.event_name }}
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
           git add songs/
+
           if git diff --cached --quiet; then
-            echo 'No song changes to commit'
+            echo 'Nothing changed'
             exit 0
           fi
-          if [ "$SONG_MODE" = edit ]; then
+
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            git commit -m "Rebuild song catalog"
+          elif [ "$SONG_MODE" = "edit" ]; then
             git commit -m "Edit song: $SONG_NAME"
           else
             git commit -m "Add song: $SONG_NAME"
           fi
+
           git push
