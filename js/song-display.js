@@ -174,6 +174,7 @@ router
 	.register("/", displayHome)
 	.register("/archive", displayArchive)
 	.register("/song", (data) => displaySong(data))
+	.register("/edit", displayEditor)
 	.register("/print", displayPrint)
 	.register("*", displayHome)
 	.init();
