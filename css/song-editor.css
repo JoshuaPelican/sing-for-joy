@@ -150,3 +150,40 @@ body.editor-page {
 #editorContent[hidden] {
   display: none !important;
 }
+
+/* Consistent spacing between editor controls */
+#editorContent button,
+#listEditorContent button {
+    margin: 4px;
+}
+
+/* Keep buttons and inputs evenly spaced in rows */
+.editor-section-header,
+.editor-order-row,
+.editor-actions,
+.list-editor-row {
+    gap: 10px;
+}
+
+/* Prevent button margins from creating uneven row spacing */
+.editor-section-header button,
+.editor-order-row button,
+.editor-actions button,
+.list-editor-row button {
+    margin: 0;
+}
+
+/* Space between stacked arrangement rows */
+.editor-order-row,
+.list-editor-row {
+    margin-bottom: 10px;
+}
+
+/* Space above and below add buttons */
+#addSection,
+#addOccurrence,
+#listAddSong,
+#listAddSongID,
+#listAddCredit {
+    margin: 12px 0;
+}
