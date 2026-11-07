@@ -48,6 +48,7 @@ function buildSong(song) {
 }
 
 async function displaySong(songData) {
+	hideEditor();
 	const song = await tryGetSong(songData.params.id);
 
 	if (!song || song.error) {
@@ -68,6 +69,7 @@ async function displaySong(songData) {
 }
 
 function displayPrint() {
+	hideEditor();
 	const html = hymnalPrinter.createPrintPageContent();
 	setSongContent(html);
 	toggleSongDisplay(true);
@@ -202,6 +204,7 @@ function navEdit(songID = null) {
 }
 
 async function displayHome() {
+	hideEditor();
 	tocSongList.innerHTML = "";
 	toggleSongDisplay(false);
 	updateArchiveButton(false);
@@ -236,6 +239,10 @@ function displayEditor(data) {
     SongEditor.open(songID);
 }
 
+function hideEditor() {
+    document.getElementById("editorContent").hidden = true;
+}
+
 /*
 async function displayArchive() {
     tocSongList.innerHTML = '';
@@ -264,6 +271,7 @@ async function displayArchive() {
 */
 
 async function displayArchive() {
+	hideEditor();
 	tocSongList.innerHTML = "";
 	toggleSongDisplay(false);
 	updateArchiveButton(true);
