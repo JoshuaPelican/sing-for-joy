@@ -3,7 +3,8 @@ const songFiles = [
     "date": "11-13-2026",
     "songs": [
       "the-risen-conqueror",
-      "praise-the-lord-forever"
+      "praise-the-lord-forever",
+      "his-love"
     ],
     "credits": [
       {
