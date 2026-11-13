@@ -363,8 +363,7 @@
             ? 'Save Song List'
             : 'Create Song List';
 
-        $('listToken').value = '';
-
+        $('listToken').value = sessionStorage.getItem('github-token') || '';
         notice('');
 
         renderSongs();
@@ -501,7 +500,8 @@
                     );
                 }
 
-                $('listToken').value = '';
+                // Save token only after GitHub accepts the submission.
+                sessionStorage.setItem('github-token', token);
 
                 notice(
                     'Submission accepted. Wait 30 seconds and press "ctrl" + "shift" + "R" to refresh the site.',

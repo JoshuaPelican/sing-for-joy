@@ -471,7 +471,7 @@
                     body
                 }
             );
-
+            
             if (!response.ok) {
                 throw Error(
                     `GitHub rejected submission (${response.status}): ` +
@@ -479,7 +479,8 @@
                 );
             }
 
-            $('token').value = '';
+            // Save token only after GitHub accepts the submission.
+            sessionStorage.setItem('github-token', token);
 
             notice(
                 'Submission accepted. Wait 30 seconds and press "ctrl" + "shift" + "R" to refresh the site.',
@@ -511,6 +512,7 @@
         arrangementContainer.replaceChildren();
 
         $('songForm').reset();
+        $('token').value = sessionStorage.getItem('github-token') || '';
         $('preview').hidden = true;
 
         $('pageTitle').textContent =
