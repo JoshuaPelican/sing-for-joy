@@ -1,0 +1,44 @@
+name: "The Risen Conqueror"
+author: "Joyful Noise"
+
+arrangement: [verse1, verse2, verse3, ending]
+
+elements:
+  ending:
+    - "Now unto Christ, the Son of God who loved me,"
+    - "and to the Father, whose embrace awaits,"
+    - "and to the Spirit, Lord of new creation,"
+    - "we bring our ransomed lives, our sacrifice of praise."
+
+  verse1:
+    - "I lift my eyes to see the risen Conqueror,"
+    - "declared in power to be the Son of God,"
+    - "who bore the curse of Adam’s disobedience,"
+    - "who brings unnumbered blessings by his blood."
+    - ""
+    - "The angels sing in joyful adoration,"
+    - "for death is swallowed up in victory,"
+    - "and countless souls, long held in death’s dominion,"
+    - "walk with their Saviour on the way of life set free."
+
+  verse2:
+    - "Long lay our world in sombre shades of darkness,"
+    - "the light extinguished and all comfort gone;"
+    - "only the flickering flame of ancient promises"
+    - "sustained the hope that light would be reborn."
+    - ""
+    - "And then he came, the Hope of every nation,"
+    - "with power to still that restless storm of old."
+    - "And oh, his love to plumb such depths of darkness"
+    - "and rise triumphant, with me safely in his hold!"
+
+  verse3:
+    - "I do not live, but Jesus lives within me;"
+    - "by grace I’m raised and sit with him on high,"
+    - "his power at work to fit me for the glory"
+    - "of everlasting resurrection life."
+    - ""
+    - "Until that day I’ll walk in faith and holiness;"
+    - "a glorious joy empowers each step I take,"
+    - "for soon I’ll see, I’ll see my risen Saviour,"
+    - "the one I love, I’ll love forever, face to face."
