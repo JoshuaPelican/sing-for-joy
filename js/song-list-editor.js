@@ -504,8 +504,7 @@
                 $('listToken').value = '';
 
                 notice(
-                    'Submission accepted. Check GitHub Actions ' +
-                    'for the commit, then reload the site.',
+                    'Submission accepted. Wait 30 seconds and press "ctrl" + "shift" + "R" to refresh the site.',
                     'success'
                 );
 
