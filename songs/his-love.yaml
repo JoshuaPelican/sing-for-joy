@@ -1,0 +1,39 @@
+name: "His Love"
+author: "Skye Peterson"
+
+arrangement: [verse1, chorus, verse2, chorus, verse3, prechorus, chorus, ending]
+
+elements:
+  chorus:
+    - "Oh what love, oh what love, reaching down to rescue us"
+    - "It never runs out, it never gives up"
+    - "We will sing forever of his love, his love"
+    - "We will sing forever of his love, his love, his love"
+
+  ending:
+    - "We will sing forever of his love, his love"
+    - "We will sing forever of his love, his love"
+    - "We will sing forever of his love, his love"
+    - "We will sing forever of his love"
+
+  prechorus:
+    - "And against his love, death is powerless"
+    - "God with us, oh what boundless love is this"
+
+  verse1:
+    - "See how far his kindness reaches, how deep and wide is love"
+    - "From the high and holy places, our king came down to us"
+    - "In our lowly hands held his holiness"
+    - "God with us, oh what boundless love is this"
+
+  verse2:
+    - "See him clothed in our condition, our hunger and our thirst"
+    - "All our sorrow, pain, temptation, our Lord endured them first"
+    - "He who bore our griefs, he who took on flesh"
+    - "God with us, oh what boundless love is this"
+
+  verse3:
+    - "See the man upon the hillside, behold the heart of God"
+    - "That would brave all hell, all evil, and endure the shameful cross"
+    - "Down to death and into darkness, and deeper still he goes"
+    - "All to rescue ruined sinners, the lowest of the low"
