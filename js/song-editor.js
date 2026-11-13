@@ -365,14 +365,26 @@
             byKey.set(key, item.id);
         }
 
+        const missingSections = new Set();
+
         for (const key of parsed.arrangement) {
             if (!byKey.has(key)) {
-                throw Error(
-                    `Arrangement references missing section: ${key}`
-                );
+                // Preserve the missing section so the user can fix it.
+                const item = addSection(key, '', false);
+                byKey.set(key, item.id);
+                missingSections.add(key);
             }
 
             arrangement.push(byKey.get(key));
+        }
+
+        renderArrangement();
+
+        if (missingSections.size) {
+            console.warn(
+                'Missing sections created:',
+                [...missingSections]
+            );
         }
 
         renderArrangement();
